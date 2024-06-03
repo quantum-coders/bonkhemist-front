@@ -1,0 +1,48 @@
+/*Variables
+--------------------------------------------------------------------------------------------------------------------- */
+@import "base.variables";
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "globals";
+
+$primary: $project_primary;
+
+$brand-colors: (
+	"brand1": $brand1,
+	"primary": $primary,
+	"secondary": $secondary
+);
+
+$theme-colors: map-merge($theme-colors, $brand-colors);
+
+@import "bootstrap/scss/bootstrap";
+
+/* Generals
+--------------------------------------------------------------------------------------------------------------------- */
+
+:root {
+	--bs-primary: #0EDCA4;
+	--bs-primary-rgb: 14, 220, 164;
+}
+
+* {
+	position: relative;
+}
+
+html {
+
+	min-height: 100vh;
+}
+
+body {
+
+	min-height: 100vh;
+	font-family: Inter, sans-serif;
+}
+
+#__nuxt {
+
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
