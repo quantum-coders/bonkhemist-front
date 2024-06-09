@@ -1,0 +1,142 @@
+.swv-button-trigger
+	font-family: Silkscreen, sans-serif
+	background: white
+	border: 0
+	display: flex
+	align-items: center
+	padding: 0.25rem 0.5rem
+	font-size: 0.75rem
+	z-index: 100
+
+	img
+		width: 20px
+		height: auto
+		margin-right: 0.25rem
+
+	p
+		margin: 0
+
+.swv-dropdown
+
+	&:hover
+		.swv-dropdown-list
+			display: flex
+			flex-direction: column
+			list-style-type: none
+			padding: 0
+
+	.swv-dropdown-list
+		position: absolute
+		display: none
+		width: 100%
+		height: 65px * 2
+		top: 100%
+		background: url('/images/menu.png') no-repeat right top
+		background-size: 100% auto
+		image-rendering: pixelated
+		z-index: 1001
+
+		li
+			display: block
+			margin: 0 4px
+			color: black
+			text-shadow: 0 1px 0 white
+			font-family: Silkscreen, sans-serif
+			padding: 0.5rem 1rem
+			cursor: pointer
+			border-bottom: 2px solid rgba(black, 10%)
+			border-top: 2px solid rgba(white, 10%)
+
+			&:hover
+				color: #FF005C
+
+			&:first-child
+				border-top: none
+
+			&:last-child
+				border-bottom: none
+
+.swv-modal
+	position: fixed
+	z-index: 100
+	top: 0
+	left: 0
+	width: 100%
+	height: 100%
+	display: flex
+	justify-content: center
+	align-items: center
+	font-family: 'Silkscreen', sans-serif
+
+	.swv-modal-overlay
+		background: rgba(black, 10%)
+		top: 0
+		left: 0
+		width: 100%
+		height: 100%
+		position: absolute
+
+	.swv-modal-container
+		border-radius: 0.25rem
+		box-shadow: 0 0 1rem rgba(black, 10%)
+		position: relative
+		width: 100%
+		max-width: 30rem
+		z-index: 1
+
+		.swv-modal-wrapper
+			image-rendering: pixelated
+			background: url("/images/wallet-dialog.png") no-repeat
+			background-size: 100% auto
+			padding: 1rem 2rem
+			width: 480px
+			height: 180px
+
+		.swv-modal-title
+			font-size: 1rem
+			text-align: center
+			margin-bottom: 2rem
+
+		.swv-modal-button-close
+			position: absolute
+			top: 1.2rem
+			right: 1.2rem
+			background: transparent
+			border: none
+
+		.swv-modal-list
+			list-style: none
+			padding: 0
+			margin: 0
+
+			li
+				margin-bottom: 1rem
+
+				&:last-child
+					margin-bottom: 0
+
+				.swv-button
+					background: transparent
+					border: none
+					flex-wrap: wrap
+					cursor: pointer
+					display: flex
+					flex-direction: row
+					align-items: center
+					gap: 1rem
+					width: 100%
+					transition: background 0.25s
+
+					.swv-wallet-status
+						margin-left: auto
+
+					p
+						margin: 0
+
+					.swv-button-icon
+						display: block
+						width: 30px
+
+						img
+							width: 100%
+							height: auto

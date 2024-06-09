@@ -9,24 +9,36 @@
 		"postinstall": "nuxt prepare"
 	},
 	"devDependencies": {
+		"@pinia/nuxt": "^0.4.11",
 		"@popperjs/core": "^2.11.7",
 		"@sidebase/nuxt-auth": "^0.6.0-alpha.2",
 		"@types/node": "^18",
+		"@vueuse/core": "^10.10.0",
+		"@vueuse/nuxt": "^10.10.0",
+		"bootstrap": "^5.2.3",
 		"nuxt": "^3.10.2",
 		"nuxt-icon": "^0.6.10",
 		"nuxt-svgo": "^3.0.1",
+		"pinia": "^2.1.7",
 		"sass": "^1.62.1",
 		"sass-loader": "^13.2.2"
 	},
 	"dependencies": {
+		"@solana/wallet-adapter-base": "^0.9.23",
+		"@solana/wallet-adapter-vue": "^0.4.5",
+		"@solana/wallet-adapter-wallets": "^0.19.32",
+		"@solana/web3.js": "^1.92.3",
 		"@vuelidate/core": "^2.0.2",
 		"@vuelidate/validators": "^2.0.2",
-		"bootstrap": "^5.2.3",
+		"dragselect": "^3.0.5",
 		"floating-vue": "^2.0.0-beta.20",
+		"solana-wallets-vue": "^0.6.1",
+		"uuid": "^9.0.1",
 		"velocity-animate": "^1.5.2",
 		"vue-final-modal": "^4.4.2",
 		"vue-tippy": "v6",
 		"vue-toast-notification": "^3.0",
-		"vue3-google-map": "^0.15.0"
+		"vue3-google-map": "^0.15.0",
+		"vuedraggable": "^4.1.0"
 	}
 }

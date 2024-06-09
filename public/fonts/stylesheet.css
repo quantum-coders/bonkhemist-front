@@ -1,0 +1,9 @@
+@font-face {
+	font-family: 'Perfect DOS';
+	src: url('PerfectDOSVGA437Win.woff2') format('woff2'),
+	url('PerfectDOSVGA437Win.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
