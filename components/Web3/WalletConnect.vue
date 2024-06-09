@@ -1,11 +1,13 @@
 <template>
 	<wallet-multi-button />
+	<btn class="mint-btn" @click="mintElement">Mint Element</btn>
 </template>
 
 <script setup>
 	import { useWallet, initWallet } from 'solana-wallets-vue';
 	import { WalletMultiButton } from 'solana-wallets-vue';
 
+	const { createNft } = useShyft();
 	const alchemy = useAlchemyStore();
 	const config = useRuntimeConfig();
 
@@ -13,6 +15,16 @@
 		autoConnect: true,
 	});
 
+	// creaNft Returns the enconde transaction
+	const mintElement = async () => {
+		// get public key
+		const publicKey = alchemy.connectedWallet;
+		const res = await createNft('', publicKey);
+		const encodedTransaction = res.encoded_transaction;
+		console.log('encodedTransaction', encodedTransaction);
+		const { signTransaction, sendTransaction } = useWallet();
+		const signedTransaction = await useWallet().signTransaction(encodedTransaction);
+	};
 	const connectedWallet = computed(() => {
 		const { publicKey, sendTransaction } = useWallet();
 
@@ -81,5 +93,16 @@
 </script>
 
 <style lang="sass" scoped>
+	.mint-btn
+		margin-top: 20px
+		background-color: #000
+		color: #fff
+		padding: 10px 20px
+		border: none
+		border-radius: 5px
+		cursor: pointer
+		transition: background-color 0.3s ease
 
+		&:hover
+			background-color: #333
 </style>

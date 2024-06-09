@@ -41,6 +41,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			apiUrl: process.env.API_URL,
+			SHYFT_API_KEY: process.env.SHYFT_API_KEY,
 		},
 	},
 	vite: {
