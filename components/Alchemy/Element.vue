@@ -52,6 +52,9 @@
 		&.is-dragging
 			cursor: grabbing
 
+		&.is-deleting
+			pointer-events: none
+
 		&.is-merging
 			animation: vibrate 0.3s ease infinite
 			pointer-events: none

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const useAlchemyStore = defineStore('alchemyStore', () => {
 
+	const config = useRuntimeConfig();
 	const elements = ref([]);
 	const connectedWallet = ref('');
 	const availableElements = ref([
@@ -12,14 +13,17 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		{ name: 'Air', slug: 'air' },
 	]);
 	const search = ref('');
+	const challengesSuggestions = ref([]);
+	const challengesLoading = ref(false);
+	const lastCombination = ref(null);
 
 	const clearElements = () => {
 		elements.value = [];
-	}
+	};
 
 	const orderElementsAlphabetically = () => {
 		availableElements.value.sort((a, b) => a.name.localeCompare(b.name));
-	}
+	};
 
 	const createNewElementInstance = (slug) => {
 
@@ -146,11 +150,38 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		if(callback) callback(newElement);
 	};
 
+	const generateChallenges = async () => {
+
+		challengesLoading.value = true;
+
+		// get accessTokens from localStorage
+		const accessToken = localStorage.getItem('accessToken');
+
+		const challengeRes = await fetch(`${ config.public.apiUrl }/users/me/challenges`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${ accessToken }`,
+			}
+		});
+
+		if(!challengeRes.ok) {
+			throw new Error('Error generating challenges');
+		}
+
+		const challenges = await challengeRes.json();
+		challengesSuggestions.value = challenges.data;
+
+		challengesLoading.value = false;
+	};
+
 	return {
 		availableElements,
 		elements,
 		connectedWallet,
 		search,
+		challengesSuggestions,
+		challengesLoading,
+		lastCombination,
 		createNewElementInstance,
 		isOverlapping,
 		getOverlapPercentage,
@@ -158,6 +189,7 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		createElementFromAvailable,
 		cloneElement,
 		clearElements,
-		orderElementsAlphabetically
+		orderElementsAlphabetically,
+		generateChallenges,
 	};
 });

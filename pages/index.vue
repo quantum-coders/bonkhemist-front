@@ -19,6 +19,8 @@
 				<div class="combining-bottom" />
 
 				<div class="combining-wrapper">
+					<alchemy-challenges v-if="challengesVisible" @ready="challengesVisible = false" />
+
 					<alchemy-how-to @ready="howTo = false" class="how-to" :class="{ 'is-hidden': !howTo }" />
 
 					<div class="menu d-flex">
@@ -30,6 +32,12 @@
 
 						<animated-button
 							class="button how-to-play ms-auto"
+							@click.prevent="challengesVisible = true; alchemy.generateChallenges()"
+							text="Challenges"
+						/>
+
+						<animated-button
+							class="button how-to-play"
 							@click.prevent="alchemy.clearElements()"
 							text="Clear&nbsp;Elements"
 						/>
@@ -40,6 +48,17 @@
 							text="How&nbsp;to&nbsp;play"
 						/>
 					</div>
+
+					<div class="last-combination" v-if="!!alchemy.lastCombination">
+						<a class="view" href="#">View Reason</a>
+
+						<div class="combination-wrapper">
+							<p>You created <strong>{{ alchemy.lastCombination.result }}</strong>! From <strong>{{ alchemy.lastCombination.element1 }}</strong> +
+								<strong>{{ alchemy.lastCombination.element2 }}</strong></p>
+							<p>Reason: <strong>{{ alchemy.lastCombination.reasoning }}</strong></p>
+						</div>
+					</div>
+
 					<div class="combining-area">
 						<template v-if="!!alchemy.connectedWallet">
 							<template v-for="element in alchemy.elements" :key="element.id">
@@ -92,7 +111,9 @@
 					<div v-else class="loading-elements">
 						<img src="/images/bonk.png" class="bonk" alt="">
 
-						<p><alchemy-animated-text text="Connect&nbsp;your&nbsp;wallet" /></p>
+						<p>
+							<alchemy-animated-text text="Connect&nbsp;your&nbsp;wallet" />
+						</p>
 					</div>
 				</div>
 				<div class="combining-right" />
@@ -115,6 +136,7 @@
 	const config = useRuntimeConfig();
 	const dsStarted = ref(false);
 	const howTo = ref(true);
+	const challengesVisible = ref(false);
 
 	const elements = ref([]);
 	const somethingDeleting = ref(false);
@@ -323,6 +345,8 @@
 						cloud.classList.add('animated');
 
 						const combination = await combineRes.json();
+
+						alchemy.lastCombination = combination.data;
 
 						alchemy.addAvailableElement({
 							name: combination.data.result,
@@ -704,6 +728,52 @@
 			height: calc(100% - 18px)
 			left: 0
 			z-index: 100
+
+	.how-to
+		z-index: 11
+
+	.last-combination
+		height: 32px
+		z-index: 10
+		overflow: hidden
+		font-family: Silkscreen, sans-serif
+		font-size: 12px
+
+		.view
+			position: absolute
+			right: 0.5rem
+			color: white
+			line-height: 1
+			z-index: 2
+			top: 5px
+			text-decoration: none
+			padding: 2px 0.5rem
+			border: 2px solid white
+
+		&:hover
+			overflow: visible
+
+			.view
+				display: none
+
+		.combination-wrapper
+			background: #59CF93
+			padding: 0.5rem
+			position: absolute
+			top: 0
+			left: 0
+			width: 100%
+
+		p
+			margin-bottom: 0.5rem
+			color: white
+			user-select: none
+
+			strong
+				font-weight: normal
+				color: black
+
+	// mint and delete drop zones
 
 	.mint-drop-zone
 		position: absolute
