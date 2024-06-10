@@ -13,6 +13,14 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 	]);
 	const search = ref('');
 
+	const clearElements = () => {
+		elements.value = [];
+	}
+
+	const orderElementsAlphabetically = () => {
+		availableElements.value.sort((a, b) => a.name.localeCompare(b.name));
+	}
+
 	const createNewElementInstance = (slug) => {
 
 		// get the element from the available elements
@@ -142,12 +150,14 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		availableElements,
 		elements,
 		connectedWallet,
+		search,
 		createNewElementInstance,
 		isOverlapping,
 		getOverlapPercentage,
 		addAvailableElement,
 		createElementFromAvailable,
 		cloneElement,
-		search,
+		clearElements,
+		orderElementsAlphabetically
 	};
 });

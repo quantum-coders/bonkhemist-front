@@ -19,15 +19,26 @@
 				<div class="combining-bottom" />
 
 				<div class="combining-wrapper">
-					<div class="menu">
-						<a href="#" class="play-music" @click.prevent="toggleMusic">
-							<template v-if="!!musicPlaying">
-								Pause Music
-							</template>
-							<template v-else>
-								Play Music
-							</template>
-						</a>
+					<alchemy-how-to @ready="howTo = false" class="how-to" :class="{ 'is-hidden': !howTo }" />
+
+					<div class="menu d-flex">
+						<animated-button
+							@click.prevent="toggleMusic"
+							class="play-music"
+							:text="!!musicPlaying ? 'Pause&nbsp;Music' : 'Play&nbsp;Music'"
+						/>
+
+						<animated-button
+							class="button how-to-play ms-auto"
+							@click.prevent="alchemy.clearElements()"
+							text="Clear&nbsp;Elements"
+						/>
+
+						<animated-button
+							class="button how-to-play"
+							@click.prevent="howTo = true"
+							text="How&nbsp;to&nbsp;play"
+						/>
 					</div>
 					<div class="combining-area">
 						<template v-if="!!alchemy.connectedWallet">
@@ -51,6 +62,12 @@
 				<div class="index-area">
 					<template v-if="!!alchemy.connectedWallet">
 						<div class="search">
+							<a
+								v-if="!!alchemy.search"
+								@click.prevent="alchemy.search = ''"
+								href="#"
+								class="delete-query"
+							><img src="/images/close.png" alt=""></a>
 
 							<!-- search input -->
 							<input
@@ -72,6 +89,11 @@
 							</div>
 						</div>
 					</template>
+					<div v-else class="loading-elements">
+						<img src="/images/bonk.png" class="bonk" alt="">
+
+						<p><alchemy-animated-text text="Connect&nbsp;your&nbsp;wallet" /></p>
+					</div>
 				</div>
 				<div class="combining-right" />
 			</div>
@@ -85,12 +107,14 @@
 	import DragSelect from 'dragselect';
 	import Velocity from 'velocity-animate';
 	import { v4 as uuidv4 } from 'uuid';
+	import AnimatedButton from '~/components/Alchemy/AnimatedButton.vue';
 	const ds = ref(null);
 	const { createNft } = useShyft();
 
 	const alchemy = useAlchemyStore();
 	const config = useRuntimeConfig();
 	const dsStarted = ref(false);
+	const howTo = ref(true);
 
 	const elements = ref([]);
 	const somethingDeleting = ref(false);
@@ -551,19 +575,11 @@
 				border-bottom: 2px solid #C5C7DD
 
 				.play-music
-					text-align: center
-					cursor: pointer
-					font-family: Silkscreen, sans-serif
-					font-size: 12px
-					text-decoration: none
-					color: black
-					display: block
-					width: 120px
 					border-right: 2px solid #C5C7DD
-					padding: 0.5rem 0
 
-					&:hover
-						background: #F5F6FA
+				.how-to-play
+					border-left: 2px solid #C5C7DD
+
 
 		.combining-area
 			flex-grow: 1
@@ -616,9 +632,37 @@
 			display: flex
 			flex-direction: column
 
+			.loading-elements
+				display: flex
+				flex-direction: column
+				justify-content: center
+				align-items: center
+				flex-grow: 1
+				font-family: Silkscreen, sans-serif
+				font-size: 10px
+
+				.bonk
+					width: 67px * 2
+					image-rendering: pixelated
+					margin-bottom: 1rem
+
 			.search
 				padding: 0.5rem
 				background: #59CF93
+
+				.delete-query
+					position: absolute
+					right: 1.5rem
+					top: 50%
+					transform: translateY(-50%)
+					margin-top: -2px
+					z-index: 2
+
+					img
+						width: 10px
+						height: 10px
+						image-rendering: pixelated
+						cursor: pointer
 
 				input
 					width: 100%
@@ -664,23 +708,71 @@
 	.mint-drop-zone
 		position: absolute
 		left: 1rem
-		bottom: 1rem
+		bottom: 0
 		width: 75px * 2
 		height: 50px * 2
 		background: url('/images/mint.png') no-repeat
 		background-size: contain
 		image-rendering: pixelated
 
+		&:before
+			content: 'Mint Element Here'
+			position: absolute
+			width: 56px * 2
+			height: 20px * 2
+			background: url('/images/balloon.png') no-repeat
+			background-size: contain
+			image-rendering: pixelated
+			font-size: 10px
+			color: black
+			padding-top: 4px
+			text-align: center
+			font-family: Silkscreen, sans-serif
+			line-height: 0.9
+			bottom: calc(100% + 0.25rem)
+			animation: hover 1s infinite
+
+	// animation to hover up and down slightly and slowly
+	@keyframes hover
+		0%
+			transform: translateY(0)
+		50%
+			transform: translateY(-5px)
+		100%
+			transform: translateY(0)
+
 	.delete-drop-zone
 		position: absolute
 		right: 1rem
-		bottom: 1rem
+		bottom: 0
 		width: 102px * 2
 		height: 63px * 2
 		background: url('/images/trash-closed.png') no-repeat
 		background-size: contain
 		image-rendering: pixelated
 
+		&:before
+			content: 'Delete element'
+			position: absolute
+			width: 56px * 2
+			height: 20px * 2
+			background: url('/images/balloon.png') no-repeat
+			background-size: contain
+			image-rendering: pixelated
+			font-size: 10px
+			color: black
+			padding-top: 9px
+			text-align: center
+			font-family: Silkscreen, sans-serif
+			line-height: 0.9
+			bottom: calc(100% - 1.2rem)
+			animation: hover 1s infinite
+			right: 0
+			transition: opacity 0.3s ease
+
 		&.opened
 			background-image: url('/images/trash-opened.png')
+
+			&.opened:before
+				opacity: 0
 </style>
