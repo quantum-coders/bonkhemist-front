@@ -16,6 +16,8 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 	const challengesSuggestions = ref([]);
 	const challengesLoading = ref(false);
 	const lastCombination = ref(null);
+	const mintVisible = ref(false);
+	const elementToMint = ref(null);
 
 	const clearElements = () => {
 		elements.value = [];
@@ -182,6 +184,8 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		challengesSuggestions,
 		challengesLoading,
 		lastCombination,
+		mintVisible,
+		elementToMint,
 		createNewElementInstance,
 		isOverlapping,
 		getOverlapPercentage,

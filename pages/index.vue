@@ -19,8 +19,8 @@
 				<div class="combining-bottom" />
 
 				<div class="combining-wrapper">
+					<alchemy-mint v-if="!!alchemy.mintVisible" @ready="alchemy.mintVisible = false" />
 					<alchemy-challenges v-if="challengesVisible" @ready="challengesVisible = false" />
-
 					<alchemy-how-to @ready="howTo = false" class="how-to" :class="{ 'is-hidden': !howTo }" />
 
 					<div class="menu d-flex">
@@ -169,41 +169,6 @@
 		}
 
 		return recoveredTransaction;
-	};
-
-	// creaNft Returns the encoded transaction
-	const mintElement = async () => {
-		// get public key
-		const publicKey = alchemy.connectedWallet;
-		const provider = window.solana;
-		console.log(provider);
-
-		// Call your createNft function to get the encoded transaction
-		const res = await createNft('', publicKey.toString());
-		const encodedTransaction = res.encoded_transaction;
-		console.log(encodedTransaction);
-
-		const recoveredTransaction = getRawTransaction(encodedTransaction);
-		console.log(recoveredTransaction);
-
-		// Decode the transaction
-		const transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
-		console.log(transaction);
-
-		// Sign the transaction with the Phantom wallet
-		const { signature } = await provider.signTransaction(transaction);
-		transaction.addSignature(publicKey, signature);
-
-		console.log('signedTransaction', transaction);
-
-		// Send the transaction
-		const connection = new Connection('https://api.devnet.solana.com');
-		const sendSignature = await connection.sendRawTransaction(transaction.serialize());
-		console.log('signature', sendSignature);
-
-		// Wait for the transaction to be confirmed
-		const signatureStatus = await connection.confirmTransaction(sendSignature);
-		console.log('signatureStatus', signatureStatus);
 	};
 
 	const startDragSelect = () => {
@@ -390,7 +355,10 @@
 
 			// if the drop target is the delete zone
 			if(!!callbackObject.dropTarget && callbackObject.dropTarget.id === 'mint-zone') {
-				await mintElement();
+				alchemy.mintVisible = true;
+
+				// set the element to not visible
+				alchemy.elementToMint = alchemy.elements.find((el) => el.id === callbackObject.dropTarget.itemsDropped[0].id);
 			}
 
 			// if the drop target is the delete zone
@@ -454,7 +422,6 @@
 			startDragSelect();
 		}
 	});
-
 </script>
 
 <style lang="sass" scoped>
