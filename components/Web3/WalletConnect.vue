@@ -1,6 +1,5 @@
 <template>
 	<wallet-multi-button />
-	<btn class="mint-btn" @click="mintElement">Mint Element</btn>
 </template>
 
 <script setup>
@@ -11,27 +10,12 @@
 	const alchemy = useAlchemyStore();
 	const config = useRuntimeConfig();
 
-	initWallet({
-		autoConnect: true,
-	});
+	initWallet({ autoConnect: true });
 
-	// creaNft Returns the enconde transaction
-	const mintElement = async () => {
-		// get public key
-		const publicKey = alchemy.connectedWallet;
-		const res = await createNft('', publicKey);
-		const encodedTransaction = res.encoded_transaction;
-		console.log('encodedTransaction', encodedTransaction);
-		const { signTransaction, sendTransaction } = useWallet();
-		const signedTransaction = await useWallet().signTransaction(encodedTransaction);
-	};
 	const connectedWallet = computed(() => {
 		const { publicKey, sendTransaction } = useWallet();
 
 		if(publicKey && publicKey.value) {
-
-			console.log('publicKey', publicKey.value);
-
 			alchemy.connectedWallet = publicKey.value.toBase58();
 			return publicKey.value.toBase58();
 		}
@@ -41,8 +25,6 @@
 	});
 
 	watch(connectedWallet, async (currentValue) => {
-		console.log('currentValue', currentValue);
-
 		if(currentValue) {
 			const connectRes = await fetch(`${ config.public.apiUrl }/users/authenticate`, {
 				method: 'POST',
@@ -56,7 +38,6 @@
 
 			if(connectRes.ok) {
 				const connectData = await connectRes.json();
-				console.log('connectData', connectData);
 
 				// save accessToken to localStorage
 				localStorage.setItem('accessToken', connectData.accessToken);
@@ -89,20 +70,7 @@
 			alchemy.elements = [];
 		}
 	});
-
 </script>
 
 <style lang="sass" scoped>
-	.mint-btn
-		margin-top: 20px
-		background-color: #000
-		color: #fff
-		padding: 10px 20px
-		border: none
-		border-radius: 5px
-		cursor: pointer
-		transition: background-color 0.3s ease
-
-		&:hover
-			background-color: #333
 </style>

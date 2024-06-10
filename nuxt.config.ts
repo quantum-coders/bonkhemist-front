@@ -30,11 +30,7 @@ export default defineNuxtConfig({
 				{
 					rel: 'stylesheet',
 					href: 'https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@100..900&family=Silkscreen:wght@400;700&display=swap',
-				},
-				{
-					rel: 'stylesheet',
-					href: '/fonts/stylesheet.css',
-				},
+				}
 			],
 		},
 	},

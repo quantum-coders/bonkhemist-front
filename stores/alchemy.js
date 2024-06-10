@@ -87,6 +87,11 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 
 	const createElementFromAvailable = async (element, callback = null) => {
 		const newElement = createNewElementInstance(element);
+
+		// play bonk sound
+		const addSound = new Audio('/sounds/add.mp3');
+		addSound.play();
+
 		await nextTick();
 
 		// set the position of the new element to the position of the double click

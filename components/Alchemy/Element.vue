@@ -36,6 +36,9 @@
 		font-smooth: never
 		-webkit-font-smoothing: none
 		z-index: 1
+		overflow: hidden
+		max-width: 100%
+		text-overflow: ellipsis
 
 		*
 			pointer-events: none

@@ -18,20 +18,32 @@
 				<div class="combining-left" />
 				<div class="combining-bottom" />
 
-				<div class="combining-area">
-					<template v-if="!!alchemy.connectedWallet">
-						<template v-for="element in alchemy.elements" :key="element.id">
-							<alchemy-element
-								:element="element"
-								:class="{ 'is-merging': !!element.loading }"
-								v-if="element.visible"
-								@dblclick.stop="alchemy.cloneElement($event, rebindElements)"
-							/>
-						</template>
+				<div class="combining-wrapper">
+					<div class="menu">
+						<a href="#" class="play-music" @click.prevent="toggleMusic">
+							<template v-if="!!musicPlaying">
+								Pause Music
+							</template>
+							<template v-else>
+								Play Music
+							</template>
+						</a>
+					</div>
+					<div class="combining-area">
+						<template v-if="!!alchemy.connectedWallet">
+							<template v-for="element in alchemy.elements" :key="element.id">
+								<alchemy-element
+									:element="element"
+									:class="{ 'is-merging': !!element.loading, 'is-deleting': !!element.deleting }"
+									v-if="element.visible"
+									@dblclick.stop="alchemy.cloneElement($event, rebindElements)"
+								/>
+							</template>
 
-						<div class="mint-drop-zone"></div>
-						<div class="delete-drop-zone"></div>
-					</template>
+							<div class="mint-drop-zone"></div>
+							<div class="delete-drop-zone" :class="{ 'opened': !!somethingDeleting }"></div>
+						</template>
+					</div>
 				</div>
 
 				<div class="combining-middle" />
@@ -68,19 +80,25 @@
 </template>
 
 <script setup>
+	import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
+	import { Buffer } from 'buffer';
 	import DragSelect from 'dragselect';
 	import Velocity from 'velocity-animate';
 	import { v4 as uuidv4 } from 'uuid';
 	const ds = ref(null);
+	const { createNft } = useShyft();
 
 	const alchemy = useAlchemyStore();
 	const config = useRuntimeConfig();
 	const dsStarted = ref(false);
 
 	const elements = ref([]);
+	const somethingDeleting = ref(false);
+	const musicPlaying = ref(false);
+	const loopMusic = ref(null);
 
 	const rebindElements = () => {
-		ds.value.addSelectables(document.querySelectorAll('.element:not(.is-merging)'));
+		ds.value.addSelectables(document.querySelectorAll('.element:not(.is-merging):not(.is-deleting)'));
 	};
 
 	const filteredElements = computed(() => {
@@ -91,6 +109,56 @@
 			return element.name.toLowerCase().includes(alchemy.search.toLowerCase());
 		});
 	});
+
+	const getRawTransaction = (encodedTransaction) => {
+		let recoveredTransaction;
+		try {
+			recoveredTransaction = Transaction.from(
+				Buffer.from(encodedTransaction, 'base64'),
+			);
+		} catch(error) {
+			recoveredTransaction = VersionedTransaction.deserialize(
+				Buffer.from(encodedTransaction, 'base64'),
+			);
+		}
+
+		return recoveredTransaction;
+	};
+
+	// creaNft Returns the encoded transaction
+	const mintElement = async () => {
+		// get public key
+		const publicKey = alchemy.connectedWallet;
+		const provider = window.solana;
+		console.log(provider);
+
+		// Call your createNft function to get the encoded transaction
+		const res = await createNft('', publicKey.toString());
+		const encodedTransaction = res.encoded_transaction;
+		console.log(encodedTransaction);
+
+		const recoveredTransaction = getRawTransaction(encodedTransaction);
+		console.log(recoveredTransaction);
+
+		// Decode the transaction
+		const transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
+		console.log(transaction);
+
+		// Sign the transaction with the Phantom wallet
+		const { signature } = await provider.signTransaction(transaction);
+		transaction.addSignature(publicKey, signature);
+
+		console.log('signedTransaction', transaction);
+
+		// Send the transaction
+		const connection = new Connection('https://api.devnet.solana.com');
+		const sendSignature = await connection.sendRawTransaction(transaction.serialize());
+		console.log('signature', sendSignature);
+
+		// Wait for the transaction to be confirmed
+		const signatureStatus = await connection.confirmTransaction(sendSignature);
+		console.log('signatureStatus', signatureStatus);
+	};
 
 	const startDragSelect = () => {
 		ds.value = new DragSelect({
@@ -105,7 +173,7 @@
 				{
 					element: document.querySelector('.mint-drop-zone'),
 					id: 'mint-zone',
-				}
+				},
 			],
 		});
 
@@ -211,6 +279,10 @@
 
 						bonk.classList.add('animated');
 
+						// play bonk sound
+						const bonkSound = new Audio('/sounds/bonk.mp3');
+						await bonkSound.play();
+
 						// wait 500ms
 						await new Promise((resolve) => { setTimeout(() => { resolve(); }, 500); });
 
@@ -270,8 +342,7 @@
 
 			// if the drop target is the delete zone
 			if(!!callbackObject.dropTarget && callbackObject.dropTarget.id === 'mint-zone') {
-
-				alert('A mintear puto');
+				await mintElement();
 			}
 
 			// if the drop target is the delete zone
@@ -279,14 +350,48 @@
 
 				// delete from elements array all selected elements
 				// iterate itemsDropped
-				callbackObject.dropTarget.itemsDropped.forEach((item) => {
+				for(const item of callbackObject.dropTarget.itemsDropped) {
 
 					// set the element to not visible
 					const element = alchemy.elements.find((el) => el.id === item.id);
-					element.visible = false;
-				});
+
+					element.deleting = true;
+					somethingDeleting.value = true;
+
+					rebindElements();
+
+					// play bonk sound
+					const bonkSound = new Audio('/sounds/trash.mp3');
+					bonkSound.play();
+
+					// scale to 0 with velocity
+					Velocity(document.querySelector(`#${ element.id }`), {
+						scale: 0,
+					}, {
+						duration: 500,
+						complete: () => {
+							element.visible = false;
+							somethingDeleting.value = false;
+						},
+					});
+				}
 			}
 		});
+	};
+
+	const toggleMusic = () => {
+		if(!loopMusic.value) {
+			loopMusic.value = new Audio('/sounds/loop.ogg');
+			loopMusic.value.loop = true;
+		}
+
+		if(musicPlaying.value) {
+			loopMusic.value.pause();
+			musicPlaying.value = false;
+		} else {
+			loopMusic.value.play();
+			musicPlaying.value = true;
+		}
 	};
 
 	// watch alchemy.connectedWallet
@@ -432,11 +537,37 @@
 			left: 18px
 			bottom: 0
 
+		.combining-wrapper
+			flex-grow: 1
+			position: relative
+			overflow: hidden
+			flex-direction: column
+			display: flex
+			margin-left: 18px
+			margin-bottom: 18px
+
+			.menu
+				background: white
+				border-bottom: 2px solid #C5C7DD
+
+				.play-music
+					text-align: center
+					cursor: pointer
+					font-family: Silkscreen, sans-serif
+					font-size: 12px
+					text-decoration: none
+					color: black
+					display: block
+					width: 120px
+					border-right: 2px solid #C5C7DD
+					padding: 0.5rem 0
+
+					&:hover
+						background: #F5F6FA
+
 		.combining-area
 			flex-grow: 1
 			background-color: white
-			margin-left: 18px
-			margin-bottom: 18px
 			overflow: clip
 
 			:deep(.bonk)
@@ -534,15 +665,22 @@
 		position: absolute
 		left: 1rem
 		bottom: 1rem
-		width: 200px
-		height: 80px
-		border: 2px dashed #FFD002
+		width: 75px * 2
+		height: 50px * 2
+		background: url('/images/mint.png') no-repeat
+		background-size: contain
+		image-rendering: pixelated
 
 	.delete-drop-zone
 		position: absolute
 		right: 1rem
 		bottom: 1rem
-		width: 200px
-		height: 80px
-		border: 2px dashed #222
+		width: 102px * 2
+		height: 63px * 2
+		background: url('/images/trash-closed.png') no-repeat
+		background-size: contain
+		image-rendering: pixelated
+
+		&.opened
+			background-image: url('/images/trash-opened.png')
 </style>
