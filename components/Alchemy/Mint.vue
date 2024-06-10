@@ -17,17 +17,18 @@
 			<div class="modal-content text-center">
 				<h4>Mint your NFT right now!</h4>
 
+				<p>For the low price of 10 BONK, you can mint your very own Alchemical NFT!</p>
+				<p>Hurry, this element can only be minted once!</p>
 				<p>Element to mint: {{ alchemy.elementToMint.name }}</p>
-				<a href="#" @click.prevent="mintElement" class="btn btn-primary">Mint</a>
+				<a href="#" @click.prevent="mintElement" class="mint-button">Mint</a>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-	import { Connection, Transaction, VersionedTransaction } from '@solana/web3.js';
+	import { Connection, PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js';
 	import { Buffer } from 'buffer';
-
 	const { createNft } = useShyft();
 	const emit = defineEmits([ 'ready' ]);
 	const alchemy = useAlchemyStore();
@@ -45,7 +46,7 @@
 		console.log(provider);
 
 		// Call your createNft function to get the encoded transaction
-		const res = await createNft('', publicKey.toString());
+		const res = await createNft(publicKey.toString());
 		const encodedTransaction = res.encoded_transaction;
 		try {
 
@@ -54,7 +55,7 @@
 
 			// Sign the transaction with the Phantom wallet
 			const { signature } = await provider.signTransaction(transaction);
-			transaction.addSignature(publicKey, signature);
+			transaction.addSignature(new PublicKey(publicKey), signature);
 
 			console.log('signedTransaction', transaction);
 
@@ -75,6 +76,24 @@
 </script>
 
 <style lang="sass" scoped>
+
+	.mint-button
+		border: 2px solid black
+		padding: 0.25rem 1rem
+		cursor: pointer
+		text-decoration: none
+		color: black
+		background: white
+		font-size: 12px
+		font-family: Silkscreen, sans-serif
+		transition: background 0.3s, color 0.3s
+
+		&:hover
+			background: #59CF93
+			color: white
+			border-color: white
+			outline: 2px solid #59CF93
+
 	.mint-wrapper
 		display: flex
 		justify-content: center
@@ -187,7 +206,6 @@
 				width: 18px
 				height: 18px
 				image-rendering: pixelated
-
 
 			.frame-rt
 				position: absolute
