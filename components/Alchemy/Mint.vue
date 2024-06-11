@@ -86,6 +86,9 @@ const mintElement = async () => {
 		const signatureStatus = await connection.confirmTransaction(sendSignature);
 		console.log('Signature Status:', signatureStatus);
 
+		/// Enviar el tx id a la API
+		console.log(`Check your tx at solscan: url: https://solscan.io/tx/${sendSignature}`)
+
 		// Retornar o utilizar el tx id
 		return sendSignature;
 	} catch (error) {
