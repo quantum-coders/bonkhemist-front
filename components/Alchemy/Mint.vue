@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import {Connection, PublicKey, Transaction, VersionedTransaction, Keypair} from '@solana/web3.js';
+import {Connection, PublicKey, Transaction, VersionedTransaction, Keypair, ComputeBudgetProgram} from '@solana/web3.js';
 import {Buffer} from 'buffer';
 import bs58 from 'bs58';
 
@@ -48,55 +48,44 @@ const mintElement = async () => {
 	console.log("Provider:", provider);
 
 	try {
+		// Conectar a la red Solana
+		const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
+		console.log("Connection to Solana established");
 		console.log("Start creating NFT with public key:", publicKey.toString());
 		const res = await createNft(publicKey.toString());
 		console.log("NFT creado:", res);
-
 		const encodedTransaction = res.encoded_transaction;
 		console.log("Encoded Transaction:", encodedTransaction);
-
-		// Cargar la clave privada del administrador desde la configuración
 		const adminPrivateKey = useRuntimeConfig().public.ADMIN_PRIVATE_KEY;
 		console.log("Admin Private Key:", adminPrivateKey);
-
 		const adminKeyPair = await loadPrivateKey(adminPrivateKey); // Asegurarse de que la promesa se resuelva
 		console.log("Admin Key Pair:", adminKeyPair);
 		console.log("Admin Public Key:", adminKeyPair.publicKey.toString());
-		// Crear la transacción desde el buffer
+
 		let transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
-
 		console.log("Transaction:", transaction);
-		console.log(transaction.signatures);
-		console.log(transaction.signatures[0].publicKey.toString());
-		console.log(transaction.signatures[1].publicKey.toString());
-		console.log(transaction.signatures[2].publicKey.toString());
 
+
+		console.log("start: User sign in...");
 		const signedTransaction = await provider.signTransaction(transaction);
 		console.log("end: User sign in...");
-		console.log("Signed Transaction by user:", signedTransaction);
-
 		console.log("start: Admin sign in...");
-		console.log("end: Admin sign in...");
-		console.log("Signed Transaction by admin:", transaction);
+		signedTransaction.partialSign(adminKeyPair);
+		console.log("end:  Admin sign in...");
+		// hacks:
+		console.log("Start Serializing Transaction...");
+		const serializedTransaction = signedTransaction.serialize();
+		console.log("End Serialized Transaction:", serializedTransaction);
 
-		console.log("Before: Transaction:", transaction);
-		transaction.partialSign(adminKeyPair);
-		console.log("After: Transaction:", transaction);
-		console.log("start: User sign in...");
-
-		// Serializar la transacción para enviarla
-		const serializedTransaction = transaction.serialize();
-		console.log("Serialized Transaction:", serializedTransaction);
-
-		// Conectar a la red Solana
-		const connection = new Connection('https://api.mainnet-beta.solana.com');
-		console.log("Connection to Solana established");
 
 		const sendSignature = await connection.sendRawTransaction(serializedTransaction);
 		console.log("Send Signature:", sendSignature);
 
 		const signatureStatus = await connection.confirmTransaction(sendSignature);
 		console.log('Signature Status:', signatureStatus);
+
+		// Retornar o utilizar el tx id
+		return sendSignature;
 	} catch (error) {
 		console.log('Error caught:', error);
 		console.error(error);

@@ -15,7 +15,7 @@ export const useShyft = () => {
 				'amount': 10,
 				'token': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
 			},
-			'priority_fee': 10000,
+			'priority_fee': 1000000,
 		});
 
 		const requestOptions = {
