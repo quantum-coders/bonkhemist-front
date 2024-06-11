@@ -5,7 +5,7 @@ export const useShyft = () => {
 	const createNft = async (feePayer) => {
 		const raw = JSON.stringify({
 			'network': 'mainnet-beta',
-			'metadata_uri': 'https://blockchainstarter.nyc3.digitaloceanspaces.com/bonkers/bonker.json',
+			'metadata_uri': 'https://chimp.mx/bonkhemist.json',
 			'max_supply': 0,
 			'collection_address': '',
 			'receiver': feePayer,

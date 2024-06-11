@@ -62,12 +62,15 @@ const mintElement = async () => {
 		const adminKeyPair = await loadPrivateKey(adminPrivateKey); // Asegurarse de que la promesa se resuelva
 		console.log("Admin Key Pair:", adminKeyPair);
 		console.log("Admin Public Key:", adminKeyPair.publicKey.toString());
-		// Crear latransacción desde el buffer
+		// Crear la transacción desde el buffer
 		let transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
-		console.log("Before: Transaction:", transaction);
-		transaction.addSignature(adminKeyPair.publicKey, Buffer.from(adminKeyPair.secretKey, 'base64'));
-		console.log("After: Transaction:", transaction);
-		console.log("start: User sign in...");
+
+		console.log("Transaction:", transaction);
+		console.log(transaction.signatures);
+		console.log(transaction.signatures[0].publicKey.toString());
+		console.log(transaction.signatures[1].publicKey.toString());
+		console.log(transaction.signatures[2].publicKey.toString());
+
 		const signedTransaction = await provider.signTransaction(transaction);
 		console.log("end: User sign in...");
 		console.log("Signed Transaction by user:", signedTransaction);
@@ -75,6 +78,11 @@ const mintElement = async () => {
 		console.log("start: Admin sign in...");
 		console.log("end: Admin sign in...");
 		console.log("Signed Transaction by admin:", transaction);
+
+		console.log("Before: Transaction:", transaction);
+		transaction.partialSign(adminKeyPair);
+		console.log("After: Transaction:", transaction);
+		console.log("start: User sign in...");
 
 		// Serializar la transacción para enviarla
 		const serializedTransaction = transaction.serialize();
