@@ -14,20 +14,30 @@
 			<img class="frame-lt" src="/images/combining-left-top.png" alt="">
 			<img class="frame-rt" src="/images/combining-right-top.png" alt="">
 
-			<div class="loading" v-if="!!alchemy.challengesLoading">
+			<div class="loading" v-if="!!alchemy.challengesLoading && !alchemy.activeChallenge">
 				<img src="/images/bonk.png" class="bonk" alt="">
-				<p><alchemy-animated-text text="Challenges&nbsp;Loading" /></p>
+				<p>
+					<alchemy-animated-text text="Challenges&nbsp;Loading" />
+				</p>
 			</div>
 
 			<div v-else class="modal-content text-center">
 				<h4>Challenges</h4>
-				<p>Select one of the following rad challenges!</p>
 
-				<div class="challenges">
-					<template v-for="challenge in alchemy.challengesSuggestions">
-						<alchemy-element :element="{ name: challenge }" />
-					</template>
-				</div>
+				<template v-if="!!alchemy.activeChallenge">
+					<p>You have an active challenge!</p>
+					<p>Generate <strong>{{ alchemy.activeChallenge.name }}</strong> to complete it!</p>
+				</template>
+
+				<template v-else>
+					<p>Select one of the following rad challenges!</p>
+
+					<div class="challenges">
+						<template v-for="challenge in alchemy.challengesSuggestions">
+							<alchemy-element @click="selectChallenge(challenge)" :element="{ name: challenge }" />
+						</template>
+					</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -41,6 +51,26 @@
 		alchemy.challengesSuggestions = [];
 		emit('ready');
 	};
+
+	const selectChallenge = async (challenge) => {
+		alchemy.challengesLoading = true;
+		const res = await fetch(`${ useRuntimeConfig().public.apiUrl }/users/me/challenges`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${ localStorage.getItem('accessToken') }`,
+			},
+			body: JSON.stringify({
+				element: challenge,
+			}),
+		});
+
+		if(res.ok) {
+			const challengeData = await res.json();
+			alchemy.activeChallenge = challengeData.data;
+		}
+	};
+
 </script>
 
 <style lang="sass" scoped>

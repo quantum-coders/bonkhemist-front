@@ -30,10 +30,11 @@
 							:text="!!musicPlaying ? 'Pause&nbsp;Music' : 'Play&nbsp;Music'"
 						/>
 
+
 						<animated-button
 							class="button how-to-play ms-auto"
 							@click.prevent="challengesVisible = true; alchemy.generateChallenges()"
-							text="Challenges"
+							:text="alchemy.activeChallenge ? `Challenge:&nbsp;${ alchemy.activeChallenge.name }` : 'Challenges'"
 						/>
 
 						<animated-button
@@ -130,7 +131,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import AnimatedButton from '~/components/Alchemy/AnimatedButton.vue';
 	const ds = ref(null);
-	const { createNft } = useShyft();
+	const { errorToast, successToast } = usePrettyToast();
 
 	const alchemy = useAlchemyStore();
 	const config = useRuntimeConfig();
@@ -313,6 +314,26 @@
 
 						alchemy.lastCombination = combination.data;
 
+						if(!!alchemy.activeChallenge) {
+
+							const accessToken = localStorage.getItem('accessToken');
+							fetch(`${ config.public.apiUrl }/users/me/challenges/check`, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									'Authorization': `Bearer ${ accessToken }`,
+								},
+								body: JSON.stringify({
+									element: combination.data.result,
+								}),
+							}).then((res) => res.json()).then((data) => {
+								if(data.data) {
+									alchemy.activeChallenge = null;
+									successToast('Challenge completed!');
+								}
+							});
+						}
+
 						alchemy.addAvailableElement({
 							name: combination.data.result,
 							slug: combination.data.slug,
@@ -416,6 +437,7 @@
 		if(!!currentValue) {
 			if(dsStarted.value) return;
 			dsStarted.value = true;
+			howTo.value = false;
 
 			// wait 1 second
 			await new Promise((resolve) => { setTimeout(() => { resolve(); }, 1000); });
