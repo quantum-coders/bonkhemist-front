@@ -49,6 +49,14 @@
 				if(elementRes.ok) {
 					const elementData = await elementRes.json();
 
+					// clear alchemy.elements
+					alchemy.availableElements = [
+						{ name: 'Water', slug: 'water' },
+						{ name: 'Fire', slug: 'fire' },
+						{ name: 'Earth', slug: 'earth' },
+						{ name: 'Air', slug: 'air' },
+					];
+
 					// for each element, add to alchemy.elements
 					elementData.data.forEach((element) => {
 
