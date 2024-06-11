@@ -28,7 +28,6 @@
 
 <script setup>
 import {Connection, PublicKey, Transaction, VersionedTransaction, Keypair, ComputeBudgetProgram} from '@solana/web3.js';
-import {Buffer} from 'buffer';
 import bs58 from 'bs58';
 
 const {createNft} = useShyft();
@@ -48,6 +47,8 @@ const mintElement = async () => {
 	console.log("Provider:", provider);
 
 	try {
+		const {Buffer} = await import('buffer');
+		window.Buffer = Buffer;
 		// Conectar a la red Solana
 		const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
 		console.log("Connection to Solana established");
@@ -64,6 +65,7 @@ const mintElement = async () => {
 
 		let transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
 		console.log("Transaction:", transaction);
+		// Add priority fee
 
 
 		console.log("start: User sign in...");
@@ -87,8 +89,8 @@ const mintElement = async () => {
 		// Retornar o utilizar el tx id
 		return sendSignature;
 	} catch (error) {
-		console.log('Error caught:', error);
-		console.error(error);
+		console.error('Error caught:', error);
+		console.error('Error details:', error.message, error.stack);
 	}
 };
 

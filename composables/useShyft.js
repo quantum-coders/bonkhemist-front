@@ -5,7 +5,7 @@ export const useShyft = () => {
 	const createNft = async (feePayer) => {
 		const raw = JSON.stringify({
 			'network': 'mainnet-beta',
-			'metadata_uri': 'https://chimp.mx/bonkhemist.json',
+			'metadata_uri': 'https://blockchainstarter.nyc3.digitaloceanspaces.com/bonkers/bonkhemist.json',
 			'max_supply': 0,
 			'collection_address': '',
 			'receiver': feePayer,
@@ -15,7 +15,7 @@ export const useShyft = () => {
 				'amount': 10,
 				'token': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
 			},
-			'priority_fee': 1000000,
+			'priority_fee': 4451612,
 		});
 
 		const requestOptions = {
