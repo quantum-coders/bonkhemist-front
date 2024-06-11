@@ -38,6 +38,8 @@ export default defineNuxtConfig({
 		public: {
 			apiUrl: process.env.API_URL,
 			SHYFT_API_KEY: process.env.SHYFT_API_KEY,
+			SOLANA_RPC_URL: process.env.SOLANA_RPC_URL,
+			ADMIN_PRIVATE_KEY: process.env.ADMIN_PRIVATE_KEY,
 		},
 	},
 	vite: {
