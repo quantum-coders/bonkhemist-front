@@ -34,7 +34,10 @@
 
 				<template v-else>
 					<h4>Minted!</h4>
-					<p>Your <strong><alchemy-animated-text text="incredible,&nbsp;alchemical&nbsp;NFT" /></strong> has been minted!</p>
+					<p>Your <strong>
+						<alchemy-animated-text text="incredible,&nbsp;alchemical&nbsp;NFT" />
+					</strong> has been minted!
+					</p>
 					<p class="mb-4">You are now the proud owner of...</p>
 					<p class="element-to-mint">
 						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }" />
@@ -62,6 +65,8 @@
 	const { createNft, getNFTs } = useShyft();
 	const emit = defineEmits([ 'ready' ]);
 	const alchemy = useAlchemyStore();
+	const config = useRuntimeConfig();
+	const { errorToast, successToast } = usePrettyToast();
 
 	const ready = () => {
 		alchemy.mintSuggestions = [];
@@ -70,14 +75,53 @@
 
 	// creaNft Returns the encoded transaction
 	const mintElement = async () => {
+
+		const accessToken = localStorage.getItem('accessToken');
 		const publicKey = alchemy.connectedWallet;
 		const provider = window.solana;
 		console.log('Provider:', provider);
 
+		//check element in /elements/water/check
+		const checkRes = await fetch(`${ config.public.apiUrl }/elements/${ alchemy.elementToMint.slug }/check`, {
+			headers: {
+				'Authorization': `Bearer ${ accessToken }`,
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if(!checkRes.ok) {
+			const checkData = await checkRes.json();
+			console.log('Check Data:', checkData);
+			errorToast(checkData.message);
+			return;
+		}
+
+		const checkData = await checkRes.json();
+		if(!checkData.data.mintWallet) {
+			errorToast('This element can no longer be minted');
+			return;
+		}
+
 		// wait 5 seconds
-		/*await new Promise((resolve) => setTimeout(resolve, 5000));
+		await new Promise((resolve) => setTimeout(resolve, 5000));
+
+		// burn element
+		const burnRes = await fetch(`${ config.public.apiUrl }/users/me/elements/burn`, {
+			method: 'POST',
+			body: JSON.stringify({
+				element: alchemy.elementToMint.slug,
+				hash: 'BOOOOOOBIES'
+			}),
+			headers: {
+				'Authorization': `Bearer ${ accessToken }`,
+				'Content-Type': 'application/json',
+			},
+		});
+
+
+
 		alchemy.justMinted = true;
-		return;*/
+		return;
 
 		try {
 			const { Buffer } = await import('buffer');
@@ -87,7 +131,7 @@
 			const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
 			console.log('Connection to Solana established');
 			console.log('Start creating NFT with public key:', publicKey.toString());
-			const res = await createNft(publicKey.toString());
+			const res = await createNft(publicKey.toString(), alchemy.elementToMint.slug);
 			console.log('NFT creado:', res);
 			const encodedTransaction = res.encoded_transaction;
 			console.log('Encoded Transaction:', encodedTransaction);

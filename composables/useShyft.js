@@ -7,10 +7,10 @@ export const useShyft = () => {
 	const apiKey = useRuntimeConfig().public.SHYFT_API_KEY;
 	const baseUrl = 'https://api.shyft.to';
 
-	const createNft = async (feePayer) => {
+	const createNft = async (feePayer, slug) => {
 		const raw = JSON.stringify({
 			'network': 'mainnet-beta',
-			'metadata_uri': 'https://blockchainstarter.nyc3.digitaloceanspaces.com/bonkers/bonkhemist.json',
+			'metadata_uri': `https://bonkhemist-api.qcdr.io/elements/${ slug }/element.json`,
 			'max_supply': 0,
 			'collection_address': 'FYqvL1JRrr8bhrG73xjgqGNMfQASNiVW3ebBpzgmc2g1',
 			'receiver': feePayer,
