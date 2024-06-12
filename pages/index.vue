@@ -30,7 +30,6 @@
 							:text="!!musicPlaying ? 'Pause&nbsp;Music' : 'Play&nbsp;Music'"
 						/>
 
-
 						<animated-button
 							class="button how-to-play ms-auto"
 							@click.prevent="challengesVisible = true; alchemy.generateChallenges()"
@@ -54,7 +53,8 @@
 						<a class="view" href="#">View Reason</a>
 
 						<div class="combination-wrapper">
-							<p>You created <strong>{{ alchemy.lastCombination.result }}</strong>! From <strong>{{ alchemy.lastCombination.element1 }}</strong> +
+							<p>You created <strong>{{ alchemy.lastCombination.result }}</strong>! From
+								<strong>{{ alchemy.lastCombination.element1 }}</strong> +
 								<strong>{{ alchemy.lastCombination.element2 }}</strong></p>
 							<p>Reason: <strong>{{ alchemy.lastCombination.reasoning }}</strong></p>
 						</div>
@@ -226,9 +226,6 @@
 
 					rebindElements();
 
-					// calculate .combining-area height
-					const combiningAreaHeight = document.querySelector('.combining-area').offsetHeight;
-
 					const element1Dom = document.querySelector(`#${ element1.id }`);
 					const element2Dom = document.querySelector(`#${ element2.id }`);
 
@@ -369,6 +366,25 @@
 						});
 
 						// add the new element to the dragselect instance
+						ds.value.addSelectables(document.querySelectorAll('.element'));
+
+					} else {
+
+						element1.loading = false;
+						element2.loading = false;
+
+						Velocity(bonk, {
+							left: '-200px',
+							top: '-200px',
+						}, {
+							duration: 500,
+							complete: () => {
+								bonk.remove();
+							},
+						});
+
+						errorToast('Combination failed');
+
 						ds.value.addSelectables(document.querySelectorAll('.element'));
 					}
 				}
