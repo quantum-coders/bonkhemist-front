@@ -15,35 +15,53 @@
 			<img class="frame-rt" src="/images/combining-right-top.png" alt="">
 
 			<div class="modal-content text-center">
-				<h4>Mint your NFT right now!</h4>
 
-				<p>For the low price of <strong>
-					<alchemy-animated-text :text="'80K&nbsp;BONKs'" />
-				</strong>, you can mint your very own Alchemical NFT!
-				</p>
-				<p>Hurry, this element can only be minted once!</p>
-				<p>Element to mint: {{ alchemy.elementToMint.name }}</p>
-				<a href="#" @click.prevent="mintElement" class="mint-button">Mint</a>
+				<template v-if="!alchemy.justMinted">
+
+					<h4>Mint your NFT right now!</h4>
+
+					<p>For the low price of <strong>
+						<alchemy-animated-text :text="'80K&nbsp;BONKs'" />
+					</strong>, you can mint your very own Alchemical NFT!
+					</p>
+					<p>Hurry, this element can only be minted once!</p>
+					<p class="mb-4">Element to mint:</p>
+					<p class="element-to-mint">
+						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }" />
+					</p>
+					<a href="#" @click.prevent="mintElement" class="mint-button">Mint</a>
+				</template>
+
+				<template v-else>
+					<h4>Minted!</h4>
+					<p>Your <strong><alchemy-animated-text text="incredible,&nbsp;alchemical&nbsp;NFT" /></strong> has been minted!</p>
+					<p class="mb-4">You are now the proud owner of...</p>
+					<p class="element-to-mint">
+						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }" />
+					</p>
+
+					<p>Check it out in your inventory!</p>
+				</template>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import {
-	Connection,
-	PublicKey,
-	Transaction,
-	VersionedTransaction,
-	Keypair,
-	ComputeBudgetProgram,
-	sendAndConfirmTransaction
-} from '@solana/web3.js';
-import bs58 from 'bs58';
+	import {
+		Connection,
+		PublicKey,
+		Transaction,
+		VersionedTransaction,
+		Keypair,
+		ComputeBudgetProgram,
+		sendAndConfirmTransaction,
+	} from '@solana/web3.js';
+	import bs58 from 'bs58';
 
-const {createNft, getNFTs} = useShyft();
-const emit = defineEmits(['ready']);
-const alchemy = useAlchemyStore();
+	const { createNft, getNFTs } = useShyft();
+	const emit = defineEmits([ 'ready' ]);
+	const alchemy = useAlchemyStore();
 
 	const ready = () => {
 		alchemy.mintSuggestions = [];
@@ -56,101 +74,84 @@ const alchemy = useAlchemyStore();
 		const provider = window.solana;
 		console.log('Provider:', provider);
 
-// creaNft Returns the encoded transaction
-const mintElement = async () => {
-	const publicKey = alchemy.connectedWallet;
-	const provider = window.solana;
-	console.log("Provider:", provider);
-	try {
-		const {Buffer} = await import('buffer');
+		// wait 5 seconds
+		/*await new Promise((resolve) => setTimeout(resolve, 5000));
+		alchemy.justMinted = true;
+		return;*/
 
-		window.Buffer = Buffer;
-		// Conectar a la red Solana
-		const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
-		console.log("Connection to Solana established");
-		console.log("Start creating NFT with public key:", publicKey.toString());
-		const res = await createNft(publicKey.toString());
-		console.log("NFT creado:", res);
-		const encodedTransaction = res.encoded_transaction;
-		console.log("Encoded Transaction:", encodedTransaction);
-		const adminPrivateKey = useRuntimeConfig().public.ADMIN_PRIVATE_KEY;
-		console.log("Admin Private Key:", adminPrivateKey);
-		const adminKeyPair = await loadPrivateKey(adminPrivateKey); // Asegurarse de que la promesa se resuelva
-		console.log("Admin Key Pair:", adminKeyPair);
-		console.log("Admin Public Key:", adminKeyPair.publicKey.toString());
+		try {
+			const { Buffer } = await import('buffer');
+
+			window.Buffer = Buffer;
+			// Conectar a la red Solana
+			const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
+			console.log('Connection to Solana established');
+			console.log('Start creating NFT with public key:', publicKey.toString());
+			const res = await createNft(publicKey.toString());
+			console.log('NFT creado:', res);
+			const encodedTransaction = res.encoded_transaction;
+			console.log('Encoded Transaction:', encodedTransaction);
+			const adminPrivateKey = useRuntimeConfig().public.ADMIN_PRIVATE_KEY;
+			console.log('Admin Private Key:', adminPrivateKey);
+			const adminKeyPair = await loadPrivateKey(adminPrivateKey); // Asegurarse de que la promesa se resuelva
+			console.log('Admin Key Pair:', adminKeyPair);
+			console.log('Admin Public Key:', adminKeyPair.publicKey.toString());
+
+			let transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
+			console.log('Transaction:', transaction);
+			// Add priority fee
 
 			console.log('start: User sign in...');
-			const signedTransaction = await provider.signTransaction(transaction);
+			// const signedTransaction = await provider.signTransaction(transaction);
 			console.log('end: User sign in...');
 			console.log('start: Admin sign in...');
-			signedTransaction.partialSign(adminKeyPair);
+			transaction.partialSign(adminKeyPair);
 			console.log('end:  Admin sign in...');
-			// hacks:
 			console.log('Start Serializing Transaction...');
-			const serializedTransaction = signedTransaction.serialize();
-			console.log('End Serialized Transaction:', serializedTransaction);
+			// const serializedTransaction = transaction.serialize();
+			// console.log("End Serialized Transaction:", serializedTransaction);
+			const tx = await provider.signAndSendTransaction(transaction);
+			const confirmedTx = await connection.confirmTransaction(tx,
+				{
+					commitment: 'confirmed',
+					skipPreflight: true,
+				},
+			);
+			console.log('Confirmed Transaction:', confirmedTx);
+			console.log(`https://solscan.io/tx/${ tx.signature }`);
+			console.log('Transaction:', tx);
+			return tx;
+		} catch(error) {
+			console.error('Error caught:', error);
+			console.error('Error details:', error.message, error.stack);
+		}
+	};
 
-			const sendSignature = await connection.sendRawTransaction(serializedTransaction);
-			console.log('Send Signature:', sendSignature);
+	onMounted(async () => {
+		const publicKey = alchemy.connectedWallet;
+		console.log('Public Key:', publicKey);
+		const accessToken = localStorage.getItem('accessToken');
 
-		console.log("start: User sign in...");
-		// const signedTransaction = await provider.signTransaction(transaction);
-		console.log("end: User sign in...");
-		console.log("start: Admin sign in...");
-		transaction.partialSign(adminKeyPair);
-		console.log("end:  Admin sign in...");
-		console.log("Start Serializing Transaction...");
-		// const serializedTransaction = transaction.serialize();
-		// console.log("End Serialized Transaction:", serializedTransaction);
-		const tx = await provider.signAndSendTransaction(transaction);
-		const confirmedTx = await connection.confirmTransaction(tx,
-			{
-				commitment: 'confirmed',
-				skipPreflight: true,
-			}
-		);
-		console.log("Confirmed Transaction:", confirmedTx);
-		console.log(`https://solscan.io/tx/${tx.signature}`);
-		console.log("Transaction:", tx);
-		return tx
-	} catch (error) {
-		console.error('Error caught:', error);
-		console.error('Error details:', error.message, error.stack);
-	}
-};
+		/*const connectRes = await fetch(`${ useRuntimeConfig().public.apiUrl }/users/me/nfts`, {
+			headers: {
+				'Authorization': `Bearer ${ accessToken }`,
+			},
+		});
 
-onMounted(async () => {
-	const publicKey = alchemy.connectedWallet;
-	console.log("Public Key:", publicKey);
-	const accessToken = localStorage.getItem('accessToken');
-	const connectRes = await fetch(`${useRuntimeConfig().public.apiUrl}/users/me/nfts`, {
-		headers: {
-			'Authorization': `Bearer ${accessToken}`,
-		},
+		if(connectRes.ok) {
+			const connectData = await connectRes.json();
+			console.log('NFTS:', connectData);
+		}*/
 	});
 
-	if (connectRes.ok) {
-		const connectData = await connectRes.json();
-		console.log("NFTS:", connectData);
-	}
-});
-
-const loadPrivateKey = async (privateKeyString) => {
-	if (!privateKeyString) {
-		throw new Error("USER_PRIVATE_KEY is not set in the .env file");
-	}
-
-	let privateKeyArray;
-	let userKeyPair;
-
-	try {
-		privateKeyArray = JSON.parse(privateKeyString);
-		if (privateKeyArray.length !== 64) {
-			throw new Error("Invalid secret key length for JSON");
+	const loadPrivateKey = async (privateKeyString) => {
+		if(!privateKeyString) {
+			throw new Error('USER_PRIVATE_KEY is not set in the .env file');
 		}
-		userKeyPair = Keypair.fromSecretKey(Uint8Array.from(privateKeyArray));
-		return userKeyPair;
-	} catch (jsonError) {
+
+		let privateKeyArray;
+		let userKeyPair;
+
 		try {
 			privateKeyArray = JSON.parse(privateKeyString);
 			if(privateKeyArray.length !== 64) {
@@ -189,6 +190,9 @@ const loadPrivateKey = async (privateKeyString) => {
 
 <style lang="sass" scoped>
 
+	.element-to-mint
+		transform: scale(1.5)
+
 	.mint-button
 		border: 2px solid black
 		padding: 0.25rem 1rem
@@ -205,6 +209,10 @@ const loadPrivateKey = async (privateKeyString) => {
 			color: white
 			border-color: white
 			outline: 2px solid #59CF93
+
+	.modal-content
+		strong
+			color: #59CF93
 
 	.mint-wrapper
 		display: flex

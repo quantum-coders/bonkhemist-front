@@ -16,13 +16,22 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 	const challengesSuggestions = ref([]);
 	const challengesLoading = ref(false);
 	const lastCombination = ref(null);
+
 	const mintVisible = ref(false);
+	const justMinted = ref(false);
+
 	const elementToMint = ref(null);
 	const activeChallenge = ref(null);
 
 	const clearElements = () => {
 		elements.value = [];
 	};
+
+	const resetMint = () => {
+		mintVisible.value = false;
+		elementToMint.value = null;
+		justMinted.value = false;
+	}
 
 	const orderElementsAlphabetically = () => {
 		availableElements.value.sort((a, b) => a.name.localeCompare(b.name));
@@ -188,6 +197,7 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		mintVisible,
 		elementToMint,
 		activeChallenge,
+		justMinted,
 		createNewElementInstance,
 		isOverlapping,
 		getOverlapPercentage,
@@ -197,5 +207,6 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		clearElements,
 		orderElementsAlphabetically,
 		generateChallenges,
+		resetMint
 	};
 });

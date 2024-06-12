@@ -19,7 +19,7 @@
 				<div class="combining-bottom" />
 
 				<div class="combining-wrapper">
-					<alchemy-mint v-if="!!alchemy.mintVisible" @ready="alchemy.mintVisible = false" />
+					<alchemy-mint v-if="!!alchemy.mintVisible" @ready="alchemy.resetMint" />
 					<alchemy-challenges v-if="challengesVisible" @ready="challengesVisible = false" />
 					<alchemy-how-to @ready="howTo = false" class="how-to" :class="{ 'is-hidden': !howTo }" />
 
