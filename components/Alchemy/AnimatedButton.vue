@@ -32,7 +32,7 @@
 		color: black
 		display: block
 		min-width: 130px
-		padding: 0.5rem 0
+		padding: 0.5rem 1rem
 
 		&:hover
 			background: #F5F6FA
