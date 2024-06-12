@@ -1,3 +1,9 @@
+import {Connection, PublicKey,} from "@solana/web3.js";
+
+const METAPLEX_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+
 export const useShyft = () => {
     const apiKey = useRuntimeConfig().public.SHYFT_API_KEY;
     const baseUrl = 'https://api.shyft.to';

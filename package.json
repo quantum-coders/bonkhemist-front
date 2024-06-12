@@ -24,6 +24,7 @@
 		"sass-loader": "^13.2.2"
 	},
 	"dependencies": {
+		"@solana/spl-token": "^0.4.6",
 		"@solana/wallet-adapter-base": "^0.9.23",
 		"@solana/wallet-adapter-vue": "^0.4.5",
 		"@solana/wallet-adapter-wallets": "^0.19.32",

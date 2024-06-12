@@ -27,10 +27,18 @@
 </template>
 
 <script setup>
-import {Connection, PublicKey, Transaction, VersionedTransaction, Keypair, ComputeBudgetProgram} from '@solana/web3.js';
+import {
+	Connection,
+	PublicKey,
+	Transaction,
+	VersionedTransaction,
+	Keypair,
+	ComputeBudgetProgram,
+	sendAndConfirmTransaction
+} from '@solana/web3.js';
 import bs58 from 'bs58';
 
-const {createNft} = useShyft();
+const {createNft, getNFTs} = useShyft();
 const emit = defineEmits(['ready']);
 const alchemy = useAlchemyStore();
 
@@ -45,9 +53,9 @@ const mintElement = async () => {
 	const publicKey = alchemy.connectedWallet;
 	const provider = window.solana;
 	console.log("Provider:", provider);
-
 	try {
 		const {Buffer} = await import('buffer');
+
 		window.Buffer = Buffer;
 		// Conectar a la red Solana
 		const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
@@ -69,34 +77,46 @@ const mintElement = async () => {
 
 
 		console.log("start: User sign in...");
-		const signedTransaction = await provider.signTransaction(transaction);
+		// const signedTransaction = await provider.signTransaction(transaction);
 		console.log("end: User sign in...");
 		console.log("start: Admin sign in...");
-		signedTransaction.partialSign(adminKeyPair);
+		transaction.partialSign(adminKeyPair);
 		console.log("end:  Admin sign in...");
-		// hacks:
 		console.log("Start Serializing Transaction...");
-		const serializedTransaction = signedTransaction.serialize();
-		console.log("End Serialized Transaction:", serializedTransaction);
-
-
-		const sendSignature = await connection.sendRawTransaction(serializedTransaction);
-		console.log("Send Signature:", sendSignature);
-
-		const signatureStatus = await connection.confirmTransaction(sendSignature);
-		console.log('Signature Status:', signatureStatus);
-
-		/// Enviar el tx id a la API
-		console.log(`Check your tx at solscan: url: https://solscan.io/tx/${sendSignature}`)
-
-		// Retornar o utilizar el tx id
-		return sendSignature;
+		// const serializedTransaction = transaction.serialize();
+		// console.log("End Serialized Transaction:", serializedTransaction);
+		const tx = await provider.signAndSendTransaction(transaction);
+		const confirmedTx = await connection.confirmTransaction(tx,
+			{
+				commitment: 'confirmed',
+				skipPreflight: true,
+			}
+		);
+		console.log("Confirmed Transaction:", confirmedTx);
+		console.log(`https://solscan.io/tx/${tx.signature}`);
+		console.log("Transaction:", tx);
+		return tx
 	} catch (error) {
 		console.error('Error caught:', error);
 		console.error('Error details:', error.message, error.stack);
 	}
 };
 
+onMounted(async () => {
+	const publicKey = alchemy.connectedWallet;
+	console.log("Public Key:", publicKey);
+	const accessToken = localStorage.getItem('accessToken');
+	const connectRes = await fetch(`${useRuntimeConfig().public.apiUrl}/users/me/nfts`, {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		},
+	});
+
+	if (connectRes.ok) {
+		const connectData = await connectRes.json();
+		console.log("NFTS:", connectData);
+	}
+});
 
 const loadPrivateKey = async (privateKeyString) => {
 	if (!privateKeyString) {
