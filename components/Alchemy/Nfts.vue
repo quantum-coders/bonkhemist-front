@@ -12,9 +12,6 @@
 				<p>{{ nft.metadata.description }}</p>
 				<div class="actions">
 					<button class="nft-btn" @click="goToSolscan(nft.address)">View on Solscan</button>
-<!--
-					<button class="nft-btn" @click="addToWallet(nft.mintAddress)">Add to Wallet</button>
--->
 				</div>
 			</div>
 		</div>
@@ -22,20 +19,16 @@
 </template>
 
 <script setup>
-
-import {useWallet} from "solana-wallets-vue";
+import { useWallet } from "solana-wallets-vue";
+import {Connection, PublicKey, SystemProgram, Transaction} from "@solana/web3.js";
 
 const alchemy = useAlchemyStore();
+const { connected, sendTransaction, publicKey } = useWallet();
 
 const goToSolscan = (mintAddress) => {
-	window.open(`https://solscan.io/token/${mintAddress}`, '_blank');
+    window.open(`https://solscan.io/token/${mintAddress}`, '_blank');
 };
 
-const addToWallet = (mintAddress) => {
-	const {publicKey, sendTransaction} = useWallet();
-	const wallet = publicKey.value.toBase58();
-
-};
 </script>
 
 <style scoped lang="sass">
