@@ -2,7 +2,7 @@
 	<span class="animated-text" v-for="(letter, i) in letters" :key="i">
 		<span class="letter"
 			:style="{ '--delay': i }"
-		>{{ letter }}</span>
+		>{{ letter === ' ' ? '&nbsp;' : letter }}</span>
 	</span>
 </template>
 

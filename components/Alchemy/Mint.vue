@@ -21,7 +21,7 @@
 					<h4>Mint your NFT right now!</h4>
 
 					<p>For the low price of <strong>
-						<alchemy-animated-text :text="'80K&nbsp;BONKs'" />
+						<alchemy-animated-text :text="'80K BONKs'" />
 					</strong>, you can mint your very own Alchemical NFT!
 					</p>
 					<p>Hurry, this element can only be minted once!</p>
@@ -35,7 +35,7 @@
 				<template v-else>
 					<h4>Minted!</h4>
 					<p>Your <strong>
-						<alchemy-animated-text text="incredible,&nbsp;alchemical&nbsp;NFT" />
+						<alchemy-animated-text text="incredible, alchemical NFT" />
 					</strong> has been minted!
 					</p>
 					<p class="mb-4">You are now the proud owner of...</p>
@@ -105,8 +105,8 @@
 		// wait 5 seconds
 		await new Promise((resolve) => setTimeout(resolve, 5000));
 
-		// burn element
-		const burnRes = await fetch(`${ config.public.apiUrl }/users/me/elements/burn`, {
+		// assign element
+		const assignRes = await fetch(`${ config.public.apiUrl }/users/me/elements/assign`, {
 			method: 'POST',
 			body: JSON.stringify({
 				element: alchemy.elementToMint.slug,

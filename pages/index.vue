@@ -23,7 +23,13 @@
 					<alchemy-challenges v-if="challengesVisible" @ready="challengesVisible = false" />
 					<alchemy-how-to @ready="howTo = false" class="how-to" :class="{ 'is-hidden': !howTo }" />
 
-					<div class="menu d-flex">
+					<div class="menu d-flex align-items-center">
+
+						<div class="music-icon">
+							<img src="/images/music.gif" v-if="musicPlaying" alt="">
+							<img src="/images/music.png" v-else alt="">
+						</div>
+
 						<animated-button
 							@click.prevent="toggleMusic"
 							class="play-music"
@@ -33,7 +39,7 @@
 						<animated-button
 							class="button how-to-play ms-auto"
 							@click.prevent="challengesVisible = true; alchemy.generateChallenges()"
-							:text="alchemy.activeChallenge ? `Challenge:&nbsp;${ alchemy.activeChallenge.name }` : 'Challenges'"
+							:text="alchemy.activeChallenge ? `Challenge:&nbsp;${ alchemy.activeChallenge.name.replace(' ', '&nbsp;') }` : 'Challenges'"
 						/>
 
 						<animated-button
@@ -99,21 +105,35 @@
 						<div class="elements-wrapper">
 
 							<div class="scroll-wrapper">
-								<div class="elements">
+								<div class="elements" v-if="indexMode === 'elements'">
 									<alchemy-element
 										v-for="element in filteredElements"
 										@click="alchemy.createElementFromAvailable(element.slug, rebindElements)"
 										:element="element"
 									/>
 								</div>
+								<alchemy-nfts v-else-if="indexMode === 'nfts'" />
 							</div>
 						</div>
+						<div class="tabs d-flex">
+							<alchemy-animated-button
+								text="Elements"
+								@click="indexMode = 'elements'"
+								:class="{ 'is-active': indexMode === 'elements' }"
+							/>
+							<alchemy-animated-button
+								text="NFT's"
+								@click="indexMode = 'nfts'"
+								:class="{ 'is-active': indexMode === 'nfts' }"
+							/>
+						</div>
+
 					</template>
 					<div v-else class="loading-elements">
 						<img src="/images/bonk.png" class="bonk" alt="">
 
 						<p>
-							<alchemy-animated-text text="Connect&nbsp;your&nbsp;wallet" />
+							<alchemy-animated-text text="Connect your wallet" />
 						</p>
 					</div>
 				</div>
@@ -143,6 +163,7 @@
 	const somethingDeleting = ref(false);
 	const musicPlaying = ref(false);
 	const loopMusic = ref(null);
+	const indexMode = ref('elements');
 
 	const rebindElements = () => {
 		ds.value.addSelectables(document.querySelectorAll('.element:not(.is-merging):not(.is-deleting)'));
@@ -603,8 +624,24 @@
 				background: white
 				border-bottom: 2px solid #C5C7DD
 
+				.music-icon
+					position: absolute
+					padding-left: 1rem
+					margin-right: -1rem
+					z-index: 10
+					top: 50%
+					transform: translateY(-50%)
+
+					img
+						width: 10px * 2
+						height: 8px * 2
+						image-rendering: pixelated
+
 				.play-music
+					padding-left: 2rem
 					border-right: 2px solid #C5C7DD
+
+					width: 180px
 
 				.how-to-play
 					border-left: 2px solid #C5C7DD
@@ -675,6 +712,19 @@
 					image-rendering: pixelated
 					margin-bottom: 1rem
 
+			.tabs
+				border-top: 2px solid #C5C7DD
+				gap: 2px
+				background: #C5C7DD
+
+				a
+					flex-grow: 1
+					background: white
+
+					&.is-active
+						background: #59CF93
+						color: white
+
 			.search
 				padding: 0.5rem
 				background: #59CF93
@@ -702,6 +752,9 @@
 
 			.elements-wrapper
 				flex-grow: 1
+
+				.scroll-wrapper
+					will-change: transform
 
 			.elements
 				padding: 0.5rem

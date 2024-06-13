@@ -17,7 +17,7 @@
 			<div class="loading" v-if="!!alchemy.challengesLoading && !alchemy.activeChallenge">
 				<img src="/images/bonk.png" class="bonk" alt="">
 				<p>
-					<alchemy-animated-text text="Challenges&nbsp;Loading" />
+					<alchemy-animated-text text="Challenges Loading" />
 				</p>
 			</div>
 
