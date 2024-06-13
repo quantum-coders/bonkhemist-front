@@ -96,7 +96,7 @@ const mintElement = async () => {
 	}
 
 	const checkData = await checkRes.json();
-	if (checkData.data.mintWallet) {
+	if (checkData.data?.mintedHash != null || checkData.data?.mintedHash !== undefined) {
 		errorToast('This element can no longer be minted because someone found it first!');
 		return;
 	}
