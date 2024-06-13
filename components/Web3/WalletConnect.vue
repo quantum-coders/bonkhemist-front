@@ -42,11 +42,11 @@
 				// save accessToken to localStorage
 				localStorage.setItem('accessToken', connectData.accessToken);
 
-				console.log(connectData);
-
 				if(connectData.data && connectData.data?.challenge) {
 					alchemy.activeChallenge = connectData.data.challenge;
 				}
+
+				await alchemy.fetchNFTs();
 
 				const elementRes = await fetch(`${ config.public.apiUrl }/users/me/elements`, {
 					headers: { 'Authorization': `Bearer ${ connectData.accessToken }` },

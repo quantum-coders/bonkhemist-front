@@ -1,9 +1,8 @@
 <template>
-	<div class="nfts is-empty">
-		<div class="empty text-center">
+	<div class="nfts" :class="{ 'is-empty': alchemy.nfts.length === 0 }">
+		<div class="empty text-center" v-if="alchemy.nfts.length === 0">
 			<img class="doge" src="/images/doge.png" alt="">
 			<p class="wow"><alchemy-animated-text text="Wow, such empty" /></p>
-
 			<p>Mint any element to start your collection!</p>
 		</div>
 	</div>
@@ -11,7 +10,7 @@
 </template>
 
 <script setup>
-
+	const alchemy = useAlchemyStore();
 </script>
 
 <style lang="sass" scoped>

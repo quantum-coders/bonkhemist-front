@@ -6,16 +6,12 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 	const config = useRuntimeConfig();
 	const elements = ref([]);
 	const connectedWallet = ref('');
-	const availableElements = ref([
-		{ name: 'Water', slug: 'water' },
-		{ name: 'Fire', slug: 'fire' },
-		{ name: 'Earth', slug: 'earth' },
-		{ name: 'Air', slug: 'air' },
-	]);
+	const availableElements = ref([]);
 	const search = ref('');
 	const challengesSuggestions = ref([]);
 	const challengesLoading = ref(false);
 	const lastCombination = ref(null);
+	const nfts = ref([]);
 
 	const mintVisible = ref(false);
 	const justMinted = ref(false);
@@ -31,7 +27,7 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		mintVisible.value = false;
 		elementToMint.value = null;
 		justMinted.value = false;
-	}
+	};
 
 	const orderElementsAlphabetically = () => {
 		availableElements.value.sort((a, b) => a.name.localeCompare(b.name));
@@ -162,6 +158,42 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		if(callback) callback(newElement);
 	};
 
+	const fetchNFTs = async () => {
+		const accessToken = localStorage.getItem('accessToken');
+
+		const nftRes = await fetch(`${ config.public.apiUrl }/users/me/nfts`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${ accessToken }`,
+			},
+		});
+
+		if(!nftRes.ok) {
+			throw new Error('Error fetching NFTs');
+		}
+
+		const nftsData = await nftRes.json();
+		nfts.value = nftsData.data;
+	};
+
+	const fetchElements = async () => {
+		const accessToken = localStorage.getItem('accessToken');
+
+		const elementRes = await fetch(`${ config.public.apiUrl }/users/me/elements`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${ accessToken }`,
+			},
+		});
+
+		if(!elementRes.ok) {
+			throw new Error('Error fetching elements');
+		}
+
+		const elementData = await elementRes.json();
+		elements.value = elementData.data;
+	};
+
 	const generateChallenges = async () => {
 
 		challengesLoading.value = true;
@@ -173,7 +205,7 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${ accessToken }`,
-			}
+			},
 		});
 
 		if(!challengeRes.ok) {
@@ -198,6 +230,7 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		elementToMint,
 		activeChallenge,
 		justMinted,
+		nfts,
 		createNewElementInstance,
 		isOverlapping,
 		getOverlapPercentage,
@@ -207,6 +240,7 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		clearElements,
 		orderElementsAlphabetically,
 		generateChallenges,
-		resetMint
+		resetMint,
+		fetchNFTs,
 	};
 });
