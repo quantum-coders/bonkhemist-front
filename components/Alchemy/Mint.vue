@@ -29,7 +29,13 @@
 					<p class="element-to-mint">
 						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }"/>
 					</p>
-					<a href="#" @click.prevent="mintElement" class="mint-button">Mint</a>
+					<a href="#" @click.prevent="mintElement" :class="{'mint-button': true, 'mint-button disabled-button': loading}" class="mint-button">
+						<span v-if="!loading">Mint</span>
+						<div v-if="loading" class="spinner-border text-primary loading-effect" role="status"
+							>
+							<span class="visually-hidden">Loading...</span>
+						</div>
+					</a>
 				</template>
 
 				<template v-else>
@@ -69,6 +75,7 @@ const alchemy = useAlchemyStore();
 const config = useRuntimeConfig();
 const {errorToast, successToast} = usePrettyToast();
 const mintedTransaction = ref(null);
+const loading = ref(false);
 const ready = () => {
 	alchemy.mintSuggestions = [];
 	emit('ready');
@@ -76,6 +83,7 @@ const ready = () => {
 
 // creaNft Returns the encoded transaction
 const mintElement = async () => {
+	loading.value = true;
 	mintedTransaction.value = null;
 	const accessToken = localStorage.getItem('accessToken');
 	const publicKey = alchemy.connectedWallet;
@@ -96,15 +104,15 @@ const mintElement = async () => {
 	}
 
 	const checkData = await checkRes.json();
-	if (checkData.data?.mintedHash != null || checkData.data?.mintedHash !== undefined) {
+
+	console.log("ddata: ", checkData.data);
+	console.log("Minting validation: ", checkData.data?.mintedHash == null);
+	if (checkData.data?.mintedHash !== null) {
 		errorToast('This element can no longer be minted because someone found it first!');
 		return;
 	}
-
-	// wait 5 seconds
-	await new Promise((resolve) => setTimeout(resolve, 5000));
-
 	try {
+
 		const {Buffer} = await import('buffer');
 
 		window.Buffer = Buffer;
@@ -146,8 +154,10 @@ const mintElement = async () => {
 		alchemy.justMinted = true;
 		mintedTransaction.value = `https://solscan.io/tx/${tx.signature}`
 		successToast('Element minted successfully!');
+		loading.value = false;
 		return tx;
 	} catch (error) {
+		loading.value = false;
 		console.error('Error caught:', error);
 		console.error('Error details:', error.message, error.stack);
 	}
@@ -201,10 +211,18 @@ const loadPrivateKey = async (privateKeyString) => {
 </script>
 
 <style lang="sass" scoped>
-
+.loading-effect
+	width: 1rem
+	height: 1rem
+	border-width: 2px
+	margin: 0 auto
+	display: block
 .element-to-mint
 	transform: scale(1.5)
 
+.disabled-button
+	pointer-events: none
+	opacity: 0.5
 .mint-button
 	border: 2px solid black
 	padding: 0.25rem 1rem
