@@ -68,6 +68,7 @@ import {
 	sendAndConfirmTransaction,
 } from '@solana/web3.js';
 import bs58 from 'bs58';
+import {useWallet} from "solana-wallets-vue";
 
 const {createNft, getNFTs} = useShyft();
 const emit = defineEmits(['ready']);
@@ -87,7 +88,20 @@ const mintElement = async () => {
 	mintedTransaction.value = null;
 	const accessToken = localStorage.getItem('accessToken');
 	const publicKey = alchemy.connectedWallet;
-	const provider = window.solana;
+	let provider;
+	if(useWallet().wallet.value.adapter.name.toLowerCase() === 'backpack'){
+		provider = window.backpack;
+	}else if(useWallet().wallet.value.adapter.name.toLowerCase() === 'solana'){
+		provider = window.solana;
+	} else if (useWallet().wallet.value.adapter.name.toLowerCase() === 'phantom'){
+		provider = window.solflare;
+	}
+
+	if(!provider){
+		errorToast('Wallet not found');
+		return;
+	}
+
 
 	//check element in /elements/water/check
 	const checkRes = await fetch(`${config.public.apiUrl}/elements/${alchemy.elementToMint.slug}/check`, {
