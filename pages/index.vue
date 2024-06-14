@@ -88,19 +88,23 @@
 				<div class="index-area">
 					<template v-if="!!alchemy.connectedWallet">
 						<div class="search">
-							<a
-								v-if="!!alchemy.search"
-								@click.prevent="alchemy.search = ''"
-								href="#"
-								class="delete-query"
-							><img src="/images/close.png" alt=""></a>
+							<div class="search-input-wrapper">
+								<a
+									v-if="!!alchemy.search"
+									@click.prevent="alchemy.search = ''"
+									href="#"
+									class="delete-query"
+								><img src="/images/close.png" alt=""></a>
 
-							<!-- search input -->
-							<input
-								type="text"
-								placeholder="Search Element..."
-								v-model="alchemy.search"
-							/>
+								<!-- search input -->
+								<input
+									type="text"
+									placeholder="Search Element..."
+									v-model="alchemy.search"
+								/>
+							</div>
+
+							<span class="number-elements">{{ alchemy.availableElements.length }} Elements</span>
 						</div>
 						<div class="elements-wrapper">
 
@@ -729,9 +733,20 @@
 				padding: 0.5rem
 				background: #59CF93
 
+				.search-input-wrapper
+					background: red
+
+				.number-elements
+					font-size: 10px
+					color: white
+					display: block
+					font-family: Silkscreen, sans-serif
+					text-align: right
+					padding-top: 0.25rem
+
 				.delete-query
 					position: absolute
-					right: 1.5rem
+					right: 0.8rem
 					top: 50%
 					transform: translateY(-50%)
 					margin-top: -2px
