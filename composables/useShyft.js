@@ -16,7 +16,7 @@ export const useShyft = () => {
 			'receiver': feePayer,
 			'fee_payer': feePayer,
 			'service_charge': {
-				'receiver': '7NCX85HVox1YKW7bLQGQ36nMVSzhqvXXsKxVSghVGdsf',
+				'receiver': 'E4kitnCyc8MqFYjvUVJ1Ypggd7h7tWPMBWnboGSpt7Bb',
 				'amount': 80000,
 				'token': 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
 			},

@@ -116,7 +116,7 @@
 										:element="element"
 									/>
 								</div>
-								<alchemy-nfts v-else-if="indexMode === 'nfts'" />
+								<AlchemyNfts v-else-if="indexMode === 'nfts'" />
 							</div>
 						</div>
 						<div class="tabs d-flex">
