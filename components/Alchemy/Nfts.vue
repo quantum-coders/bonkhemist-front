@@ -29,6 +29,10 @@ const goToSolscan = (mintAddress) => {
     window.open(`https://solscan.io/token/${mintAddress}`, '_blank');
 };
 
+onMounted(async () => {
+	await alchemy.fetchNFTs();
+});
+
 </script>
 
 <style scoped lang="sass">
