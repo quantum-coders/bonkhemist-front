@@ -94,6 +94,8 @@ const mintElement = async () => {
 	}else if(useWallet().wallet.value.adapter.name.toLowerCase() === 'solana'){
 		provider = window.solana;
 	} else if (useWallet().wallet.value.adapter.name.toLowerCase() === 'phantom'){
+		provider = window.solana;
+	}else if(useWallet().wallet.value.adapter.name.toLowerCase() === 'solflare') {
 		provider = window.solflare;
 	}
 
