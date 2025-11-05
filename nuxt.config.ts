@@ -20,6 +20,13 @@ export default defineNuxtConfig({
 	app: {
 		head: {
 			title: 'Bonkhemist',
+			meta: [
+				{ property: 'og:title', content: 'Bonkhemist' },
+				{ property: 'og:image', content: '/images/bonk_og.png' },
+				{ property: 'og:type', content: 'website' },
+				{ name: 'twitter:card', content: 'summary_large_image' },
+				{ name: 'twitter:image', content: '/images/bonk_og.png' },
+			],
 			link: [
 				//favicon.ico
 				{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
