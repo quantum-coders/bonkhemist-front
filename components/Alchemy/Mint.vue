@@ -20,7 +20,7 @@
 
 					<h4>Mint your NFT right now!</h4>
 
-					<p>Select your payment token <strong>(~${{ priceInfo?.usd || 5 }} USD)</strong></p>
+					<p>Select your payment token <strong>(~${{ priceInfo?.usd || 7 }} USD)</strong></p>
 
 					<div class="token-options" v-if="priceInfo">
 						<button
