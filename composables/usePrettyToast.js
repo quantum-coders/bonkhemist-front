@@ -20,8 +20,17 @@ export const usePrettyToast = () => {
 		});
 	};
 
+	const infoToast = (message, position) => {
+
+		toast.info(message, {
+			duration: 5000,
+			position: position || 'bottom-right',
+		});
+	};
+
 	return {
 		successToast,
 		errorToast,
+		infoToast,
 	};
 };

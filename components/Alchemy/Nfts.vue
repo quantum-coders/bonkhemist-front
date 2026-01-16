@@ -6,12 +6,14 @@
 			<p>Mint any element to start your collection!</p>
 		</div>
 		<div v-else class="nft-grid">
-			<div class="nft-card" v-for="nft in alchemy.nfts" :key="nft.mintAddress">
-				<img :src="nft.metadata.image" class="nft-image" alt="NFT Image">
+			<div class="nft-card" v-for="nft in alchemy.nfts" :key="nft.address">
+				<img :src="getNftImage(nft)" class="nft-image" alt="NFT Image">
 				<h3>{{ nft.name }}</h3>
-				<p>{{ nft.metadata.description }}</p>
+				<p>{{ getNftDescription(nft) }}</p>
 				<div class="actions">
-					<button class="nft-btn" @click="goToSolscan(nft.address)">View on Solscan</button>
+					<button class="nft-btn" @click="goToSolscan(nft.address)">
+						View on Solscan
+					</button>
 				</div>
 			</div>
 		</div>
@@ -20,13 +22,21 @@
 
 <script setup>
 import { useWallet } from "solana-wallets-vue";
-import {Connection, PublicKey, SystemProgram, Transaction} from "@solana/web3.js";
 
 const alchemy = useAlchemyStore();
-const { connected, sendTransaction, publicKey } = useWallet();
 
-const goToSolscan = (mintAddress) => {
-    window.open(`https://solscan.io/token/${mintAddress}`, '_blank');
+// Get image URL from NFT on-chain metadata
+const getNftImage = (nft) => {
+	return nft.metadata?.image || '/images/nft-placeholder.png';
+};
+
+// Get description from NFT on-chain metadata
+const getNftDescription = (nft) => {
+	return nft.metadata?.description || '';
+};
+
+const goToSolscan = (address) => {
+	window.open(`https://solscan.io/token/${address}`, '_blank');
 };
 
 onMounted(async () => {
@@ -96,7 +106,7 @@ onMounted(async () => {
 	background: #59CF93
 	border: none
 	color: white
-	padding-bottom: 50px
+	padding: 10px
 	cursor: pointer
 	margin-right: 10px
 

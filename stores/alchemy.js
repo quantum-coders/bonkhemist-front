@@ -15,9 +15,14 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 
 	const mintVisible = ref(false);
 	const justMinted = ref(false);
+	const isLoadingElements = ref(false);
 
 	const elementToMint = ref(null);
 	const activeChallenge = ref(null);
+
+	// First Discovery Mint state
+	const mintDiscoveryVisible = ref(false);
+	const elementToMintDiscovery = ref(null);
 
 	const clearElements = () => {
 		elements.value = [];
@@ -27,6 +32,16 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		mintVisible.value = false;
 		elementToMint.value = null;
 		justMinted.value = false;
+	};
+
+	const showMintDiscovery = (element) => {
+		elementToMintDiscovery.value = element;
+		mintDiscoveryVisible.value = true;
+	};
+
+	const resetMintDiscovery = () => {
+		mintDiscoveryVisible.value = false;
+		elementToMintDiscovery.value = null;
 	};
 
 	const orderElementsAlphabetically = () => {
@@ -225,12 +240,16 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		search,
 		challengesSuggestions,
 		challengesLoading,
+		isLoadingElements,
 		lastCombination,
 		mintVisible,
 		elementToMint,
 		activeChallenge,
 		justMinted,
 		nfts,
+		// First Discovery Mint
+		mintDiscoveryVisible,
+		elementToMintDiscovery,
 		createNewElementInstance,
 		isOverlapping,
 		getOverlapPercentage,
@@ -241,6 +260,8 @@ export const useAlchemyStore = defineStore('alchemyStore', () => {
 		orderElementsAlphabetically,
 		generateChallenges,
 		resetMint,
+		showMintDiscovery,
+		resetMintDiscovery,
 		fetchNFTs,
 	};
 });

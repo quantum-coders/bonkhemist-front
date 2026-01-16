@@ -20,17 +20,28 @@
 
 					<h4>Mint your NFT right now!</h4>
 
-					<p>For the low price of <strong>
-						<alchemy-animated-text :text="'80K BONKs'"/>
-					</strong>, you can mint your very own Alchemical NFT!
-					</p>
-					<p>Hurry, this element can only be minted once!</p>
+					<p>Select your payment token <strong>(~${{ priceInfo?.usd || 5 }} USD)</strong></p>
+
+					<div class="token-options" v-if="priceInfo">
+						<button
+							v-for="token in ['SOL', 'BONK', 'WIF']"
+							:key="token"
+							class="token-option"
+							:class="{ selected: selectedToken === token }"
+							@click="selectedToken = token"
+						>
+							<img :src="getTokenIcon(token)" class="token-icon" :alt="token">
+							<span class="token-amount">{{ priceInfo.allPrices?.[token]?.formatted || '...' }}</span>
+						</button>
+					</div>
+
+					<p class="mt-3">Hurry, this element can only be minted once!</p>
 					<p class="mb-4">Element to mint:</p>
 					<p class="element-to-mint">
 						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }"/>
 					</p>
 					<a href="#" @click.prevent="mintElement" :class="{'mint-button': true, 'mint-button disabled-button': loading}" class="mint-button">
-						<span v-if="!loading">Mint</span>
+						<span v-if="!loading">Mint with {{ selectedToken }}</span>
 						<div v-if="loading" class="spinner-border text-primary loading-effect" role="status"
 							>
 							<span class="visually-hidden">Loading...</span>
@@ -44,13 +55,24 @@
 						<alchemy-animated-text text="incredible, alchemical NFT"/>
 					</strong> has been minted!
 					</p>
-					<p class="mb-4">You are now the proud owner of...</p>
-					<p class="element-to-mint">
-						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }"/>
-					</p>
 
-					<p>Check it out in your inventory!</p>
-					<a :href="mintedTransaction" target="_blank" class="mint-button">View Transaction</a>
+					<!-- NFT Card Display -->
+					<div class="nft-card" v-if="mintedNft">
+						<div class="nft-card-inner">
+							<div class="nft-image-wrapper">
+								<img :src="mintedNft.image" :alt="mintedNft.name" class="nft-image" />
+							</div>
+							<div class="nft-info">
+								<h5 class="nft-name">{{ mintedNft.name }}</h5>
+								<span class="nft-badge">First Discovery</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="mint-actions">
+						<a v-if="mintedNft?.mintAddress" :href="`https://solscan.io/token/${mintedNft.mintAddress}`" target="_blank" class="mint-button">View NFT</a>
+						<a :href="mintedTransaction" target="_blank" class="mint-button secondary">View TX</a>
+					</div>
 				</template>
 			</div>
 		</div>
@@ -60,170 +82,149 @@
 <script setup>
 import {
 	Connection,
-	PublicKey,
 	Transaction,
-	VersionedTransaction,
-	Keypair,
-	ComputeBudgetProgram,
-	sendAndConfirmTransaction,
 } from '@solana/web3.js';
-import bs58 from 'bs58';
 import {useWallet} from "solana-wallets-vue";
 
-const {createNft, getNFTs} = useShyft();
 const emit = defineEmits(['ready']);
 const alchemy = useAlchemyStore();
 const config = useRuntimeConfig();
 const {errorToast, successToast} = usePrettyToast();
 const mintedTransaction = ref(null);
+const mintedNft = ref(null);
 const loading = ref(false);
+const priceInfo = ref(null);
+const selectedToken = ref('BONK');
+
 const ready = () => {
 	alchemy.mintSuggestions = [];
 	emit('ready');
 };
 
-// creaNft Returns the encoded transaction
+// Token icons
+const getTokenIcon = (token) => {
+	const icons = {
+		SOL: '/images/solana.png',
+		BONK: '/images/bonk.png',
+		WIF: '/images/dogwifhat-wif-logo.png'
+	};
+	return icons[token] || '/images/bonk.png';
+};
+
+// Fetch mint price on mount
+const fetchMintPrice = async () => {
+	try {
+		const res = await fetch(`${config.public.apiUrl}/nfts/mint-price`);
+		if (res.ok) {
+			const data = await res.json();
+			priceInfo.value = data.data;
+		}
+	} catch (error) {
+		console.error('Error fetching mint price:', error);
+	}
+};
+
+const getWalletProvider = () => {
+	const walletName = useWallet().wallet.value?.adapter?.name?.toLowerCase();
+	if (walletName === 'backpack') return window.backpack;
+	if (walletName === 'solana' || walletName === 'phantom') return window.solana;
+	if (walletName === 'solflare') return window.solflare;
+	return null;
+};
+
+// Mint element using selected token
 const mintElement = async () => {
+	const accessToken = localStorage.getItem('accessToken');
+	const provider = getWalletProvider();
+
+	if (!provider) {
+		errorToast('Please connect your wallet first');
+		return;
+	}
+
 	loading.value = true;
 	mintedTransaction.value = null;
-	const accessToken = localStorage.getItem('accessToken');
-	const publicKey = alchemy.connectedWallet;
-	let provider;
-	if(useWallet().wallet.value.adapter.name.toLowerCase() === 'backpack'){
-		provider = window.backpack;
-	}else if(useWallet().wallet.value.adapter.name.toLowerCase() === 'solana'){
-		provider = window.solana;
-	} else if (useWallet().wallet.value.adapter.name.toLowerCase() === 'phantom'){
-		provider = window.solana;
-	}else if(useWallet().wallet.value.adapter.name.toLowerCase() === 'solflare') {
-		provider = window.solflare;
-	}
 
-	if(!provider){
-		errorToast('Wallet not found');
-		return;
-	}
-
-
-	//check element in /elements/water/check
-	const checkRes = await fetch(`${config.public.apiUrl}/elements/${alchemy.elementToMint.slug}/check`, {
-		headers: {
-			'Authorization': `Bearer ${accessToken}`,
-			'Content-Type': 'application/json',
-		},
-	});
-
-	if (!checkRes.ok) {
-		const checkData = await checkRes.json();
-		errorToast(checkData.message);
-		return;
-	}
-
-	const checkData = await checkRes.json();
-
-	console.log("ddata: ", checkData.data);
-	console.log("Minting validation: ", checkData.data?.mintedHash == null);
-	if (checkData.data?.mintedHash !== null) {
-		errorToast('This element can no longer be minted because someone found it first!');
-		return;
-	}
 	try {
-
-		const {Buffer} = await import('buffer');
-
-		window.Buffer = Buffer;
-		// Conectar a la red Solana
-		const connection = new Connection(useRuntimeConfig().public.SOLANA_RPC_URL, 'confirmed');
-		const res = await createNft(publicKey.toString(), alchemy.elementToMint.slug);
-		const encodedTransaction = res.encoded_transaction;
-		const adminPrivateKey = useRuntimeConfig().public.ADMIN_PRIVATE_KEY;
-		const adminKeyPair = await loadPrivateKey(adminPrivateKey); // Asegurarse de que la promesa se resuelva
-
-		let transaction = Transaction.from(Buffer.from(encodedTransaction, 'base64'));
-
-		transaction.partialSign(adminKeyPair);
-
-
-		const tx = await provider.signAndSendTransaction(transaction);
-		const confirmedTx = await connection.confirmTransaction(tx,
-			{
-				commitment: 'confirmed',
-				skipPreflight: true,
-			},
-		);
-
-
-		// assign element
-		const assignRes = await fetch(`${config.public.apiUrl}/users/me/elements/assign`, {
+		// Step 1: Prepare the token transfer transaction
+		const prepareRes = await fetch(`${config.public.apiUrl}/nfts/mint-discovery/prepare`, {
 			method: 'POST',
-			body: JSON.stringify({
-				element: alchemy.elementToMint.slug,
-				hash: tx.signature,
-			}),
 			headers: {
 				'Authorization': `Bearer ${accessToken}`,
 				'Content-Type': 'application/json',
 			},
+			body: JSON.stringify({
+				elementSlug: alchemy.elementToMint.slug,
+				paymentToken: selectedToken.value
+			})
 		});
 
+		if (!prepareRes.ok) {
+			const errorData = await prepareRes.json();
+			throw new Error(errorData.message || 'Failed to prepare transaction');
+		}
 
+		const prepareData = await prepareRes.json();
+
+		// Step 2: Sign transaction with wallet
+		const { Buffer } = await import('buffer');
+		window.Buffer = Buffer;
+
+		const connection = new Connection(config.public.SOLANA_RPC_URL, 'confirmed');
+		const transaction = Transaction.from(Buffer.from(prepareData.data.transaction, 'base64'));
+
+		const signedTx = await provider.signAndSendTransaction(transaction);
+		const signature = signedTx.signature || signedTx;
+
+		await connection.confirmTransaction(signature, 'confirmed');
+
+		// Step 3: Complete the mint
+		const completeRes = await fetch(`${config.public.apiUrl}/nfts/mint-discovery/complete`, {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${accessToken}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				elementSlug: alchemy.elementToMint.slug,
+				transactionSignature: signature
+			})
+		});
+
+		if (!completeRes.ok) {
+			const errorData = await completeRes.json();
+			throw new Error(errorData.message || 'Failed to complete mint');
+		}
+
+		const completeData = await completeRes.json();
+
+		// Success! Store the minted NFT data
 		alchemy.justMinted = true;
-		mintedTransaction.value = `https://solscan.io/tx/${tx.signature}`
-		successToast('Element minted successfully!');
-		loading.value = false;
-		return tx;
+		// Use mint signature for Solscan link (the actual NFT mint tx)
+		const mintSig = completeData.data?.mintSignature || completeData.data?.nft?.transactionHash;
+		mintedTransaction.value = `https://solscan.io/tx/${mintSig}`;
+		mintedNft.value = {
+			name: completeData.data?.nft?.name || `Bonkhemist: ${alchemy.elementToMint.name}`,
+			image: completeData.data?.image || completeData.data?.nft?.image,
+			element: completeData.data?.element,
+			mintAddress: completeData.data?.mintAddress || completeData.data?.nft?.mintAddress
+		};
+		successToast('NFT minted successfully!');
+
+		// Refresh NFTs
+		await alchemy.fetchNFTs();
+
 	} catch (error) {
+		console.error('Minting error:', error);
+		errorToast(error.message || 'Minting failed');
+	} finally {
 		loading.value = false;
-		console.error('Error caught:', error);
-		console.error('Error details:', error.message, error.stack);
 	}
 };
 
 onMounted(async () => {
+	await fetchMintPrice();
 });
-
-const loadPrivateKey = async (privateKeyString) => {
-	if (!privateKeyString) {
-		throw new Error('USER_PRIVATE_KEY is not set in the .env file');
-	}
-
-	let privateKeyArray;
-	let userKeyPair;
-
-	try {
-		privateKeyArray = JSON.parse(privateKeyString);
-		if (privateKeyArray.length !== 64) {
-			throw new Error('Invalid secret key length for JSON');
-		}
-		userKeyPair = Keypair.fromSecretKey(Uint8Array.from(privateKeyArray));
-		return userKeyPair;
-	} catch (jsonError) {
-		try {
-			const privateKeyBuffer = Buffer.from(privateKeyString, 'base64');
-			privateKeyArray = new Uint8Array(privateKeyBuffer);
-			if (privateKeyArray.length !== 64) {
-				throw new Error('Invalid secret key length for Base64');
-			}
-
-			userKeyPair = Keypair.fromSecretKey(privateKeyArray);
-			return userKeyPair;
-		} catch (base64Error) {
-			try {
-				privateKeyArray = bs58.decode(privateKeyString);
-
-				if (privateKeyArray.length !== 64) {
-					throw new Error('Invalid secret key length for Base58');
-				}
-
-				userKeyPair = Keypair.fromSecretKey(privateKeyArray);
-				return userKeyPair;
-			} catch (base58Error) {
-				throw new Error('Failed to decode the private key');
-			}
-		}
-	}
-
-};
 </script>
 
 <style lang="sass" scoped>
@@ -235,6 +236,117 @@ const loadPrivateKey = async (privateKeyString) => {
 	display: block
 .element-to-mint
 	transform: scale(1.5)
+
+// NFT Card Styles
+.nft-card
+	margin: 1rem 0
+	perspective: 1000px
+
+.nft-card-inner
+	background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)
+	border: 3px solid #59CF93
+	border-radius: 12px
+	padding: 0.75rem
+	box-shadow: 0 0 20px rgba(89, 207, 147, 0.3), inset 0 0 20px rgba(89, 207, 147, 0.1)
+	max-width: 200px
+	margin: 0 auto
+	animation: cardAppear 0.5s ease-out
+
+@keyframes cardAppear
+	0%
+		transform: scale(0.8) rotateY(-10deg)
+		opacity: 0
+	100%
+		transform: scale(1) rotateY(0deg)
+		opacity: 1
+
+.nft-image-wrapper
+	background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)
+	border: 2px solid #333
+	border-radius: 8px
+	padding: 4px
+	margin-bottom: 0.5rem
+
+.nft-image
+	width: 100%
+	height: auto
+	border-radius: 4px
+	image-rendering: pixelated
+	display: block
+
+.nft-info
+	text-align: center
+
+.nft-name
+	color: #59CF93
+	font-size: 10px
+	margin: 0 0 0.25rem 0
+	text-shadow: 0 0 10px rgba(89, 207, 147, 0.5)
+
+.nft-badge
+	display: inline-block
+	background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%)
+	color: #1a1a2e
+	font-size: 7px
+	padding: 2px 6px
+	border-radius: 4px
+	font-weight: bold
+	text-transform: uppercase
+
+.mint-actions
+	margin-top: 1rem
+	display: flex
+	gap: 0.5rem
+	justify-content: center
+
+	.secondary
+		background: #333
+		color: white
+		border-color: #333
+
+		&:hover
+			background: #555
+			border-color: #555
+			outline-color: #555
+
+.token-options
+	display: flex
+	gap: 0.5rem
+	justify-content: center
+	margin: 1rem 0
+
+.token-option
+	display: flex
+	flex-direction: column
+	align-items: center
+	gap: 0.25rem
+	padding: 0.5rem 0.75rem
+	background: #f5f5f5
+	border: 2px solid #ddd
+	border-radius: 8px
+	cursor: pointer
+	transition: all 0.2s
+	min-width: 80px
+
+	&:hover
+		border-color: #999
+		background: #eee
+
+	&.selected
+		border-color: #59CF93
+		background: rgba(89, 207, 147, 0.15)
+		box-shadow: 0 0 10px rgba(89, 207, 147, 0.3)
+
+	.token-icon
+		width: 24px
+		height: 24px
+		image-rendering: pixelated
+
+	.token-amount
+		font-family: 'Silkscreen', sans-serif
+		font-size: 8px
+		color: #333
+		text-align: center
 
 .disabled-button
 	pointer-events: none

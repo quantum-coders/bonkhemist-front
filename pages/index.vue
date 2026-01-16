@@ -23,6 +23,14 @@
 					<alchemy-challenges v-if="challengesVisible" @ready="challengesVisible = false" />
 					<alchemy-how-to @ready="howTo = false" class="how-to" :class="{ 'is-hidden': !howTo }" />
 
+			<!-- First Discovery Mint Modal -->
+			<alchemy-mint-discovery
+				v-if="alchemy.mintDiscoveryVisible && alchemy.elementToMintDiscovery"
+				:element="alchemy.elementToMintDiscovery"
+				@close="alchemy.resetMintDiscovery()"
+				@minted="onMintDiscoveryComplete"
+			/>
+
 					<div class="menu d-flex align-items-center">
 
 						<div class="music-icon">
@@ -109,7 +117,15 @@
 						<div class="elements-wrapper">
 
 							<div class="scroll-wrapper">
-								<div class="elements" v-if="indexMode === 'elements'">
+								<!-- Loading state -->
+								<div class="loading-elements-spinner" v-if="alchemy.isLoadingElements">
+									<img src="/images/bonk.png" class="bonk-loading" alt="">
+									<p>
+										<alchemy-animated-text text="Loading elements..." />
+									</p>
+								</div>
+								<!-- Elements list -->
+								<div class="elements" v-else-if="indexMode === 'elements'">
 									<alchemy-element
 										v-for="element in filteredElements"
 										@click="alchemy.createElementFromAvailable(element.slug, rebindElements)"
@@ -143,6 +159,9 @@
 				</div>
 				<div class="combining-right" />
 			</div>
+
+			<!-- Floating Leaderboard -->
+			<alchemy-leaderboard />
 		</div>
 	</div>
 </template>
@@ -155,7 +174,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import AnimatedButton from '~/components/Alchemy/AnimatedButton.vue';
 	const ds = ref(null);
-	const { errorToast, successToast } = usePrettyToast();
+	const { errorToast, successToast, infoToast } = usePrettyToast();
 
 	const alchemy = useAlchemyStore();
 	const config = useRuntimeConfig();
@@ -170,6 +189,7 @@
 	const indexMode = ref('elements');
 
 	const rebindElements = () => {
+		if (!ds.value) return;
 		ds.value.addSelectables(document.querySelectorAll('.element:not(.is-merging):not(.is-deleting)'));
 	};
 
@@ -181,6 +201,12 @@
 			return element.name.toLowerCase().includes(alchemy.search.toLowerCase());
 		});
 	});
+
+	const onMintDiscoveryComplete = async (result) => {
+		// Refresh NFTs after minting
+		await alchemy.fetchNFTs();
+		successToast('Your NFT is ready in your collection!');
+	};
 
 	const getRawTransaction = (encodedTransaction) => {
 		let recoveredTransaction;
@@ -360,6 +386,32 @@
 							name: combination.data.result,
 							slug: combination.data.slug,
 						});
+
+						// Check if this is a first discovery that can be minted
+						if (combination.data.isFirstDiscovery && combination.data.canMint) {
+							// Show first discovery mint modal after a short delay
+							setTimeout(() => {
+								alchemy.showMintDiscovery({
+									name: combination.data.result,
+									slug: combination.data.slug,
+									description: combination.data.description,
+									elementId: combination.data.elementId,
+								});
+							}, 1500);
+						} else if (!combination.data.isFirstDiscovery) {
+							// Element already existed - show who discovered it first
+							const discoverer = combination.data.firstDiscoverer;
+							if (discoverer) {
+								setTimeout(() => {
+									infoToast(`${combination.data.result} was first discovered by ${discoverer}. Only the first discoverer can mint it as an NFT.`);
+								}, 1500);
+							}
+						} else if (combination.data.isFirstDiscovery && !combination.data.canMint) {
+							// User discovered it first but it was already minted
+							setTimeout(() => {
+								infoToast(`You discovered ${combination.data.result} first, but it has already been minted as an NFT.`);
+							}, 1500);
+						}
 
 						const x = leftPosition + 'px';
 						const y = topPosition + 10 + 'px';
@@ -715,6 +767,31 @@
 					width: 67px * 2
 					image-rendering: pixelated
 					margin-bottom: 1rem
+
+			.loading-elements-spinner
+				display: flex
+				flex-direction: column
+				justify-content: center
+				align-items: center
+				padding: 2rem
+				font-family: Silkscreen, sans-serif
+				font-size: 10px
+				height: 100%
+
+				.bonk-loading
+					width: 67px * 2
+					image-rendering: pixelated
+					margin-bottom: 1rem
+					animation: bounce 0.6s ease-in-out infinite
+
+				p
+					color: #59CF93
+
+			@keyframes bounce
+				0%, 100%
+					transform: translateY(0)
+				50%
+					transform: translateY(-15px)
 
 			.tabs
 				border-top: 2px solid #C5C7DD
