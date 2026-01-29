@@ -118,6 +118,27 @@
 
 						<p class="nft-name">{{ mintResult?.element?.name }}</p>
 
+						<!-- Marketplace Links -->
+						<div class="marketplace-section" v-if="mintResult?.mintAddress">
+							<p class="marketplace-label">Trade your NFT on:</p>
+							<div class="marketplace-links">
+								<a
+									:href="`https://magiceden.io/item-details/${mintResult.mintAddress}`"
+									target="_blank"
+									class="marketplace-link magic-eden"
+								>
+									Magic Eden
+								</a>
+								<a
+									:href="`https://www.tensor.trade/item/${mintResult.mintAddress}`"
+									target="_blank"
+									class="marketplace-link tensor"
+								>
+									Tensor
+								</a>
+							</div>
+						</div>
+
 						<div class="success-actions">
 							<a
 								v-if="mintResult?.transactionSignature"
@@ -806,7 +827,57 @@ const getParticleStyle = (n) => {
 .nft-name
 	font-size: 14px
 	color: #59CF93
+	margin-bottom: 1rem
+
+// Marketplace Section
+.marketplace-section
 	margin-bottom: 1.5rem
+	padding: 1rem
+	background: rgba(255, 255, 255, 0.05)
+	border-radius: 8px
+	border: 1px solid rgba(255, 255, 255, 0.1)
+
+	.marketplace-label
+		font-size: 9px
+		color: #888
+		margin-bottom: 0.75rem
+		text-transform: uppercase
+
+	.marketplace-links
+		display: flex
+		gap: 0.75rem
+		justify-content: center
+
+.marketplace-link
+	display: flex
+	align-items: center
+	justify-content: center
+	gap: 6px
+	padding: 0.5rem 1rem
+	border-radius: 6px
+	font-family: 'Silkscreen', sans-serif
+	font-size: 10px
+	text-decoration: none
+	transition: all 0.2s
+	border: 2px solid
+
+	&.magic-eden
+		background: linear-gradient(135deg, #e42575 0%, #a91b60 100%)
+		color: white
+		border-color: #a91b60
+
+		&:hover
+			transform: translateY(-2px)
+			box-shadow: 0 4px 15px rgba(228, 37, 117, 0.5)
+
+	&.tensor
+		background: linear-gradient(135deg, #00d18c 0%, #00a06b 100%)
+		color: white
+		border-color: #00a06b
+
+		&:hover
+			transform: translateY(-2px)
+			box-shadow: 0 4px 15px rgba(0, 209, 140, 0.5)
 
 .success-actions
 	display: flex
