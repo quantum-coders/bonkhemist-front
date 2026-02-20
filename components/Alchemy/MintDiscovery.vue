@@ -573,6 +573,9 @@ const getParticleStyle = (n) => {
 .element-preview
 	margin: 1rem 0
 
+	:deep(.element)
+		color: #1a1a2e
+
 	.element-bounce
 		animation: element-bounce 1s ease-in-out infinite
 

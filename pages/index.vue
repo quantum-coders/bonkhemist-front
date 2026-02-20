@@ -190,7 +190,8 @@
 
 	const rebindElements = () => {
 		if (!ds.value) return;
-		ds.value.addSelectables(document.querySelectorAll('.element:not(.is-merging):not(.is-deleting)'));
+		const freshElements = document.querySelectorAll('.combining-area .element:not(.is-merging):not(.is-deleting)');
+		ds.value.setSettings({ selectables: freshElements });
 	};
 
 	const filteredElements = computed(() => {
@@ -227,7 +228,9 @@
 		ds.value = new DragSelect({
 			useTransform: false,
 			area: document.querySelector('.combining-area'),
-			selectables: document.querySelectorAll('.element'),
+			selectables: document.querySelectorAll('.combining-area .element'),
+			draggability: true,
+			immediateDrag: true,
 			dropZones: [
 				{
 					element: document.querySelector('.delete-drop-zone'),
@@ -398,19 +401,6 @@
 									elementId: combination.data.elementId,
 								});
 							}, 1500);
-						} else if (!combination.data.isFirstDiscovery) {
-							// Element already existed - show who discovered it first
-							const discoverer = combination.data.firstDiscoverer;
-							if (discoverer) {
-								setTimeout(() => {
-									infoToast(`${combination.data.result} was first discovered by ${discoverer}. Only the first discoverer can mint it as an NFT.`);
-								}, 1500);
-							}
-						} else if (combination.data.isFirstDiscovery && !combination.data.canMint) {
-							// User discovered it first but it was already minted
-							setTimeout(() => {
-								infoToast(`You discovered ${combination.data.result} first, but it has already been minted as an NFT.`);
-							}, 1500);
 						}
 
 						const x = leftPosition + 'px';
@@ -442,8 +432,8 @@
 							},
 						});
 
-						// add the new element to the dragselect instance
-						ds.value.addSelectables(document.querySelectorAll('.element'));
+						// rebind elements so DragSelect tracks only current DOM nodes
+						rebindElements();
 
 					} else {
 
@@ -462,7 +452,7 @@
 
 						errorToast('Combination failed');
 
-						ds.value.addSelectables(document.querySelectorAll('.element'));
+						rebindElements();
 					}
 				}
 			}
@@ -707,6 +697,13 @@
 			flex-grow: 1
 			background-color: white
 			overflow: clip
+			user-select: none
+
+			:deep(.ds-selector)
+				display: none !important
+
+			:deep(.ds-selector-area)
+				display: none !important
 
 			:deep(.bonk)
 				position: absolute
