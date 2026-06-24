@@ -1,3 +1,12 @@
 {
-  "common": { "loading": "Loading...", "close": "Close", "cancel": "Cancel", "confirm": "Confirm" }
+  "common": { "loading": "Loading...", "close": "Close", "cancel": "Cancel", "confirm": "Confirm" },
+  "header": {
+    "playMusic": "Play Music",
+    "pauseMusic": "Pause Music",
+    "challenges": "Challenges",
+    "clearElements": "Clear Elements",
+    "howToPlay": "How to play",
+    "searchPlaceholder": "Search Element...",
+    "elementsCount": "{count} Elements"
+  }
 }
