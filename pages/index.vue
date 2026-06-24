@@ -41,36 +41,34 @@
 						<animated-button
 							@click.prevent="toggleMusic"
 							class="play-music"
-							:text="!!musicPlaying ? 'Pause&nbsp;Music' : 'Play&nbsp;Music'"
+							:text="!!musicPlaying ? $t('header.pauseMusic') : $t('header.playMusic')"
 						/>
 
 						<animated-button
 							class="button how-to-play ms-auto"
 							@click.prevent="challengesVisible = true; alchemy.generateChallenges()"
-							:text="alchemy.activeChallenge ? `Challenge:&nbsp;${ alchemy.activeChallenge.name.replace(' ', '&nbsp;') }` : 'Challenges'"
+							:text="alchemy.activeChallenge ? $t('index.challengePrefix', { name: alchemy.activeChallenge.name.replace(' ', '&nbsp;') }) : $t('header.challenges')"
 						/>
 
 						<animated-button
 							class="button how-to-play"
 							@click.prevent="alchemy.clearElements()"
-							text="Clear&nbsp;Elements"
+							:text="$t('header.clearElements')"
 						/>
 
 						<animated-button
 							class="button how-to-play"
 							@click.prevent="howTo = true"
-							text="How&nbsp;to&nbsp;play"
+							:text="$t('header.howToPlay')"
 						/>
 					</div>
 
 					<div class="last-combination" v-if="!!alchemy.lastCombination">
-						<a class="view" href="#">View Reason</a>
+						<a class="view" href="#">{{ $t('index.viewReason') }}</a>
 
 						<div class="combination-wrapper">
-							<p>You created <strong>{{ alchemy.lastCombination.result }}</strong>! From
-								<strong>{{ alchemy.lastCombination.element1 }}</strong> +
-								<strong>{{ alchemy.lastCombination.element2 }}</strong></p>
-							<p>Reason: <strong>{{ alchemy.lastCombination.reasoning }}</strong></p>
+							<p>{{ $t('index.youCreated', { result: alchemy.lastCombination.result, element1: alchemy.lastCombination.element1, element2: alchemy.lastCombination.element2 }) }}</p>
+							<p>{{ $t('index.reason') }} <strong>{{ alchemy.lastCombination.reasoning }}</strong></p>
 						</div>
 					</div>
 
@@ -107,12 +105,12 @@
 								<!-- search input -->
 								<input
 									type="text"
-									placeholder="Search Element..."
+									:placeholder="$t('header.searchPlaceholder')"
 									v-model="alchemy.search"
 								/>
 							</div>
 
-							<span class="number-elements">{{ alchemy.availableElements.length }} Elements</span>
+							<span class="number-elements">{{ $t('header.elementsCount', { count: alchemy.availableElements.length }) }}</span>
 						</div>
 						<div class="elements-wrapper">
 
@@ -121,7 +119,7 @@
 								<div class="loading-elements-spinner" v-if="alchemy.isLoadingElements">
 									<img src="/images/bonk.png" class="bonk-loading" alt="">
 									<p>
-										<alchemy-animated-text text="Loading elements..." />
+										<alchemy-animated-text :text="$t('index.loadingElements')" />
 									</p>
 								</div>
 								<!-- Elements list -->
@@ -137,12 +135,12 @@
 						</div>
 						<div class="tabs d-flex">
 							<alchemy-animated-button
-								text="Elements"
+								:text="$t('index.tabElements')"
 								@click="indexMode = 'elements'"
 								:class="{ 'is-active': indexMode === 'elements' }"
 							/>
 							<alchemy-animated-button
-								text="NFT's"
+								:text="$t('index.tabNfts')"
 								@click="indexMode = 'nfts'"
 								:class="{ 'is-active': indexMode === 'nfts' }"
 							/>
@@ -153,7 +151,7 @@
 						<img src="/images/bonk.png" class="bonk" alt="">
 
 						<p>
-							<alchemy-animated-text text="Connect your wallet" />
+							<alchemy-animated-text :text="$t('index.connectWallet')" />
 						</p>
 					</div>
 				</div>
@@ -174,6 +172,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import AnimatedButton from '~/components/Alchemy/AnimatedButton.vue';
 	const ds = ref(null);
+	const { t } = useI18n();
 	const { errorToast, successToast, infoToast } = usePrettyToast();
 
 	const alchemy = useAlchemyStore();
@@ -206,7 +205,7 @@
 	const onMintDiscoveryComplete = async (result) => {
 		// Refresh NFTs after minting
 		await alchemy.fetchNFTs();
-		successToast('Your NFT is ready in your collection!');
+		successToast(t('index.nftReady'));
 	};
 
 	const getRawTransaction = (encodedTransaction) => {
@@ -380,7 +379,7 @@
 							}).then((res) => res.json()).then((data) => {
 								if(data.data) {
 									alchemy.activeChallenge = null;
-									successToast('Challenge completed!');
+									successToast(t('index.challengeCompleted'));
 								}
 							});
 						}
@@ -450,7 +449,7 @@
 							},
 						});
 
-						errorToast('Combination failed');
+						errorToast(t('index.combinationFailed'));
 
 						rebindElements();
 					}

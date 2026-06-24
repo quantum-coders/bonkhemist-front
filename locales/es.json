@@ -8,5 +8,18 @@
     "howToPlay": "Cómo Jugar",
     "searchPlaceholder": "Buscar Elemento...",
     "elementsCount": "{count} Elementos"
+  },
+  "index": {
+    "viewReason": "Ver Razón",
+    "youCreated": "¡Creaste {result}! De {element1} + {element2}",
+    "reason": "Razón:",
+    "loadingElements": "Cargando elementos...",
+    "tabElements": "Elementos",
+    "tabNfts": "NFT's",
+    "connectWallet": "Conecta tu billetera",
+    "challengePrefix": "Reto:&nbsp;{name}",
+    "nftReady": "¡Tu NFT está listo en tu colección!",
+    "challengeCompleted": "¡Reto completado!",
+    "combinationFailed": "Combinación fallida"
   }
 }

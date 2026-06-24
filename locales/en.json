@@ -8,5 +8,18 @@
     "howToPlay": "How to play",
     "searchPlaceholder": "Search Element...",
     "elementsCount": "{count} Elements"
+  },
+  "index": {
+    "viewReason": "View Reason",
+    "youCreated": "You created {result}! From {element1} + {element2}",
+    "reason": "Reason:",
+    "loadingElements": "Loading elements...",
+    "tabElements": "Elements",
+    "tabNfts": "NFT's",
+    "connectWallet": "Connect your wallet",
+    "challengePrefix": "Challenge:&nbsp;{name}",
+    "nftReady": "Your NFT is ready in your collection!",
+    "challengeCompleted": "Challenge completed!",
+    "combinationFailed": "Combination failed"
   }
 }
