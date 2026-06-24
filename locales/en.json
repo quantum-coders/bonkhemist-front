@@ -9,6 +9,28 @@
     "searchPlaceholder": "Search Element...",
     "elementsCount": "{count} Elements"
   },
+  "howTo": {
+    "title": "How to play",
+    "next": "Next",
+    "back": "Back",
+    "ready": "READY!",
+    "step1Intro": "Ladies and gentlemen, alchemists and crypto enthusiasts, gather 'round for the magical journey into the world of {bonkhemist}!",
+    "step1Wallet": "First things first, you need to connect your cryptocurrency wallet. This is your magical pouch that holds your precious BONK COIN.",
+    "step2Basic": "You start with the basic four: earth, water, fire, and air.",
+    "step2Mix": "Select two elements and mix them together. Watch the magic happen as they combine to form something entirely new!",
+    "step2Steam": "For example, mix water and fire to get steam.",
+    "step2Cloud": "Combine air and water to create a cloud.",
+    "step2Endless": "Keep experimenting to discover all the cool and weird combinations. The possibilities are {endless}!!",
+    "step3Adore": "Found an element that you absolutely adore? {awesome}!",
+    "step3MintBox": "Drag and drop the element into the MAGICAL BONK-BOX to mint it. If it was not already minted, you will be the first owner of this unique element.",
+    "step3BonkCoin": "Use your BONK COIN to mint the element. You can mint as many elements as you want, as long as you have enough BONK COIN and the element is not already minted.",
+    "step3OnceMinted": "Once minted, the element is yours forever, with its unique value backed by BONK COIN. Congratulations,{br}you now own a piece of {history}!",
+    "step4Clone": "Double click an element to clone it.",
+    "step4Delete": "Drag an element to the trash can to delete it.",
+    "step4HaveFun": "And finally, the most important step of all – {haveFun}!!",
+    "step4Imagination": "Let your imagination run wild, mix up a storm, and discover all the fantastical creations Bonkhemist has to offer.",
+    "step4Share": "Share your unique elements with friends, show off your minted treasures, and enjoy the magical world of Bonkhemist."
+  },
   "index": {
     "viewReason": "View Reason",
     "youCreated": "You created {result}! From {element1} + {element2}",

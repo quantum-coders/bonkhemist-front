@@ -9,6 +9,28 @@
     "searchPlaceholder": "Buscar Elemento...",
     "elementsCount": "{count} Elementos"
   },
+  "howTo": {
+    "title": "Cómo jugar",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "ready": "¡LISTO!",
+    "step1Intro": "Damas y caballeros, alquimistas y entusiastas de las criptomonedas, acérquense para el viaje mágico al mundo de {bonkhemist}!",
+    "step1Wallet": "Lo primero es lo primero: necesitas conectar tu billetera de criptomonedas. Esta es tu bolsa mágica que guarda tus preciosas BONK COIN.",
+    "step2Basic": "Comienzas con los cuatro básicos: tierra, agua, fuego y aire.",
+    "step2Mix": "Selecciona dos elementos y mézclalos. ¡Observa la magia suceder mientras se combinan para formar algo completamente nuevo!",
+    "step2Steam": "Por ejemplo, mezcla agua y fuego para obtener vapor.",
+    "step2Cloud": "Combina aire y agua para crear una nube.",
+    "step2Endless": "Sigue experimentando para descubrir todas las combinaciones geniales y extrañas. Las posibilidades son {endless}!!",
+    "step3Adore": "¿Encontraste un elemento que te encanta absolutamente? ¡{awesome}!",
+    "step3MintBox": "Arrastra y suelta el elemento en el MÁGICO BONK-BOX para mintearlo. Si aún no fue minteado, serás el primer propietario de este elemento único.",
+    "step3BonkCoin": "Usa tus BONK COIN para mintear el elemento. Puedes mintear tantos elementos como quieras, siempre que tengas suficientes BONK COIN y el elemento no haya sido minteado aún.",
+    "step3OnceMinted": "Una vez minteado, el elemento es tuyo para siempre, con su valor único respaldado por BONK COIN. ¡Felicitaciones,{br}ahora eres dueño de un pedazo de {history}!",
+    "step4Clone": "Haz doble clic en un elemento para clonarlo.",
+    "step4Delete": "Arrastra un elemento a la papelera para eliminarlo.",
+    "step4HaveFun": "Y finalmente, el paso más importante de todos – ¡{haveFun}!!",
+    "step4Imagination": "Deja volar tu imaginación, mezcla a lo grande y descubre todas las creaciones fantásticas que Bonkhemist tiene para ofrecer.",
+    "step4Share": "Comparte tus elementos únicos con amigos, presume tus tesoros minteados y disfruta del mágico mundo de Bonkhemist."
+  },
   "index": {
     "viewReason": "Ver Razón",
     "youCreated": "¡Creaste {result}! De {element1} + {element2}",
