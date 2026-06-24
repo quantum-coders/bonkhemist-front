@@ -8,11 +8,11 @@
 		<!-- Header -->
 		<header class="page-header">
 			<NuxtLink to="/" class="back-btn">
-				<span>&larr;</span> Back to Game
+				<span>&larr;</span> {{ $t('leaderboard.backToGame') }}
 			</NuxtLink>
 			<div class="logo-section">
 				<img src="/images/bonk.png" class="logo" alt="Bonkhemist">
-				<h1><alchemy-animated-text text="LEADERBOARD" /></h1>
+				<h1><alchemy-animated-text :text="$t('leaderboard.titlePage')" /></h1>
 			</div>
 		</header>
 
@@ -22,29 +22,29 @@
 			<section class="hero-section" v-if="myPosition">
 				<div class="hero-card">
 					<div class="hero-rank">
-						<span class="rank-label">YOUR RANK</span>
+						<span class="rank-label">{{ $t('leaderboard.yourRankPage') }}</span>
 						<span class="rank-value">#{{ myPosition.ranking || '?' }}</span>
 					</div>
 					<div class="hero-score">
 						<span class="score-value">{{ myPosition.totalScore || 0 }}</span>
-						<span class="score-label">TOTAL POINTS</span>
+						<span class="score-label">{{ $t('leaderboard.totalPoints') }}</span>
 					</div>
 					<div class="hero-stats">
 						<div class="stat">
 							<span class="value">{{ myPosition.totalElements || 0 }}</span>
-							<span class="label">Elements</span>
+							<span class="label">{{ $t('leaderboard.elements') }}</span>
 						</div>
 						<div class="stat">
 							<span class="value">{{ myPosition.firstDiscoveries || 0 }}</span>
-							<span class="label">First Discoveries</span>
+							<span class="label">{{ $t('leaderboard.firstDiscoveries') }}</span>
 						</div>
 						<div class="stat">
 							<span class="value">{{ myPosition.mintedNfts || 0 }}</span>
-							<span class="label">NFTs Minted</span>
+							<span class="label">{{ $t('leaderboard.nftsMinted') }}</span>
 						</div>
 						<div class="stat">
 							<span class="value">{{ myPosition.completedChallenges || 0 }}</span>
-							<span class="label">Quests Done</span>
+							<span class="label">{{ $t('leaderboard.questsDone') }}</span>
 						</div>
 					</div>
 				</div>
@@ -54,47 +54,47 @@
 			<section class="connect-section" v-else>
 				<div class="connect-card">
 					<img src="/images/bonk.png" class="connect-icon" alt="">
-					<p>Connect your wallet to see your ranking</p>
-					<NuxtLink to="/" class="connect-btn">Go to Game</NuxtLink>
+					<p>{{ $t('leaderboard.connectToSeeRanking') }}</p>
+					<NuxtLink to="/" class="connect-btn">{{ $t('leaderboard.goToGame') }}</NuxtLink>
 				</div>
 			</section>
 
 			<!-- Scoring Info -->
 			<section class="scoring-section">
-				<h2>How Scoring Works</h2>
+				<h2>{{ $t('leaderboard.howScoringWorks') }}</h2>
 				<div class="scoring-grid">
 					<div class="scoring-item">
 						<span class="points">+1</span>
-						<span class="action">Element Discovered</span>
+						<span class="action">{{ $t('leaderboard.scoreElementDiscovered') }}</span>
 					</div>
 					<div class="scoring-item highlight">
 						<span class="points">+10</span>
-						<span class="action">First Discovery</span>
+						<span class="action">{{ $t('leaderboard.scoreFirstDiscovery') }}</span>
 					</div>
 					<div class="scoring-item gold">
 						<span class="points">+50</span>
-						<span class="action">NFT Minted</span>
+						<span class="action">{{ $t('leaderboard.scoreNftMinted') }}</span>
 					</div>
 					<div class="scoring-item">
 						<span class="points">+5</span>
-						<span class="action">Quest Completed</span>
+						<span class="action">{{ $t('leaderboard.scoreQuestCompleted') }}</span>
 					</div>
 				</div>
 			</section>
 
 			<!-- Podium Section -->
 			<section class="podium-section" v-if="leaderboard.length >= 3">
-				<h2>Top Alchemists</h2>
+				<h2>{{ $t('leaderboard.topAlchemists') }}</h2>
 				<div class="podium-container">
 					<!-- Second Place -->
 					<div class="podium-place second">
 						<div class="place-card">
 							<div class="medal silver">2</div>
 							<div class="wallet">{{ formatWallet(leaderboard[1]?.user?.login) }}</div>
-							<div class="score">{{ leaderboard[1]?.totalScore || 0 }} pts</div>
+							<div class="score">{{ $t('leaderboard.statsMiniPts', { n: leaderboard[1]?.totalScore || 0 }) }}</div>
 							<div class="stats-mini">
-								<span>{{ leaderboard[1]?.totalElements || 0 }} elements</span>
-								<span>{{ leaderboard[1]?.mintedNfts || 0 }} NFTs</span>
+								<span>{{ $t('leaderboard.statsMiniElements', { n: leaderboard[1]?.totalElements || 0 }) }}</span>
+								<span>{{ $t('leaderboard.statsMiniNfts', { n: leaderboard[1]?.mintedNfts || 0 }) }}</span>
 							</div>
 						</div>
 						<div class="pedestal silver"></div>
@@ -106,10 +106,10 @@
 						<div class="place-card gold-glow">
 							<div class="medal gold">1</div>
 							<div class="wallet">{{ formatWallet(leaderboard[0]?.user?.login) }}</div>
-							<div class="score">{{ leaderboard[0]?.totalScore || 0 }} pts</div>
+							<div class="score">{{ $t('leaderboard.statsMiniPts', { n: leaderboard[0]?.totalScore || 0 }) }}</div>
 							<div class="stats-mini">
-								<span>{{ leaderboard[0]?.totalElements || 0 }} elements</span>
-								<span>{{ leaderboard[0]?.mintedNfts || 0 }} NFTs</span>
+								<span>{{ $t('leaderboard.statsMiniElements', { n: leaderboard[0]?.totalElements || 0 }) }}</span>
+								<span>{{ $t('leaderboard.statsMiniNfts', { n: leaderboard[0]?.mintedNfts || 0 }) }}</span>
 							</div>
 						</div>
 						<div class="pedestal gold"></div>
@@ -120,10 +120,10 @@
 						<div class="place-card">
 							<div class="medal bronze">3</div>
 							<div class="wallet">{{ formatWallet(leaderboard[2]?.user?.login) }}</div>
-							<div class="score">{{ leaderboard[2]?.totalScore || 0 }} pts</div>
+							<div class="score">{{ $t('leaderboard.statsMiniPts', { n: leaderboard[2]?.totalScore || 0 }) }}</div>
 							<div class="stats-mini">
-								<span>{{ leaderboard[2]?.totalElements || 0 }} elements</span>
-								<span>{{ leaderboard[2]?.mintedNfts || 0 }} NFTs</span>
+								<span>{{ $t('leaderboard.statsMiniElements', { n: leaderboard[2]?.totalElements || 0 }) }}</span>
+								<span>{{ $t('leaderboard.statsMiniNfts', { n: leaderboard[2]?.mintedNfts || 0 }) }}</span>
 							</div>
 						</div>
 						<div class="pedestal bronze"></div>
@@ -133,16 +133,16 @@
 
 			<!-- Full Rankings Table -->
 			<section class="rankings-section">
-				<h2>Full Rankings</h2>
+				<h2>{{ $t('leaderboard.fullRankings') }}</h2>
 				<div class="rankings-table">
 					<div class="table-header">
-						<span class="col-rank">Rank</span>
-						<span class="col-wallet">Wallet</span>
-						<span class="col-elements">Elements</span>
-						<span class="col-first">First Disc.</span>
-						<span class="col-nfts">NFTs</span>
-						<span class="col-quests">Quests</span>
-						<span class="col-score">Score</span>
+						<span class="col-rank">{{ $t('leaderboard.colRank') }}</span>
+						<span class="col-wallet">{{ $t('leaderboard.colWallet') }}</span>
+						<span class="col-elements">{{ $t('leaderboard.colElements') }}</span>
+						<span class="col-first">{{ $t('leaderboard.colFirstDisc') }}</span>
+						<span class="col-nfts">{{ $t('leaderboard.colNfts') }}</span>
+						<span class="col-quests">{{ $t('leaderboard.colQuests') }}</span>
+						<span class="col-score">{{ $t('leaderboard.colScore') }}</span>
 					</div>
 					<div
 						v-for="(entry, index) in leaderboard"
@@ -168,7 +168,7 @@
 				<!-- Load More -->
 				<div class="load-more" v-if="hasMore">
 					<button @click="loadMore" :disabled="loadingMore">
-						{{ loadingMore ? 'Loading...' : 'Load More' }}
+						{{ loadingMore ? $t('common.loading') : $t('leaderboard.loadMore') }}
 					</button>
 				</div>
 			</section>
@@ -177,7 +177,7 @@
 		<!-- Loading State -->
 		<main class="page-loading" v-else>
 			<img src="/images/bonk.png" class="loading-icon" alt="">
-			<p>Loading leaderboard...</p>
+			<p>{{ $t('leaderboard.loadingLeaderboard') }}</p>
 		</main>
 	</div>
 </template>

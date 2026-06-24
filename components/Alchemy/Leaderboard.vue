@@ -18,7 +18,7 @@
 				<div class="leaderboard-header">
 					<img src="/images/bonk.png" class="trophy" alt="">
 					<h2>
-						<alchemy-animated-text text="Leaderboard" />
+						<alchemy-animated-text :text="$t('leaderboard.title')" />
 					</h2>
 					<button class="close-btn" @click="isExpanded = false">
 						<img src="/images/close.png" alt="Close">
@@ -30,11 +30,11 @@
 					<div class="my-stats-card" v-if="myPosition">
 						<div class="my-rank">
 							<span class="rank-number">#{{ myPosition.ranking || '?' }}</span>
-							<span class="rank-label">Your Rank</span>
+							<span class="rank-label">{{ $t('leaderboard.yourRank') }}</span>
 						</div>
 						<div class="my-score">
 							<span class="score-number">{{ formatScore(myPosition.totalScore) }}</span>
-							<span class="score-label">points</span>
+							<span class="score-label">{{ $t('leaderboard.points') }}</span>
 						</div>
 					</div>
 
@@ -42,25 +42,25 @@
 					<div class="stats-grid" v-if="myPosition">
 						<div class="stat-item">
 							<span class="stat-value">{{ myPosition.totalElements || 0 }}</span>
-							<span class="stat-label">Elements</span>
+							<span class="stat-label">{{ $t('leaderboard.elements') }}</span>
 						</div>
 						<div class="stat-item">
 							<span class="stat-value">{{ myPosition.firstDiscoveries || 0 }}</span>
-							<span class="stat-label">First Disc.</span>
+							<span class="stat-label">{{ $t('leaderboard.firstDisc') }}</span>
 						</div>
 						<div class="stat-item">
 							<span class="stat-value">{{ myPosition.mintedNfts || 0 }}</span>
-							<span class="stat-label">NFTs</span>
+							<span class="stat-label">{{ $t('leaderboard.nfts') }}</span>
 						</div>
 						<div class="stat-item">
 							<span class="stat-value">{{ myPosition.completedChallenges || 0 }}</span>
-							<span class="stat-label">Quests</span>
+							<span class="stat-label">{{ $t('leaderboard.quests') }}</span>
 						</div>
 					</div>
 
 					<!-- Top Players Section -->
 					<div class="top-players-section">
-						<div class="section-title">Top Alchemists</div>
+						<div class="section-title">{{ $t('leaderboard.topAlchemists') }}</div>
 
 						<!-- Podium for Top 3 -->
 						<div class="podium" v-if="leaderboard.length >= 3">
@@ -98,14 +98,14 @@
 
 						<!-- View Full Leaderboard Link -->
 						<NuxtLink to="/leaderboard" class="view-full-link">
-							View Full Leaderboard &rarr;
+							{{ $t('leaderboard.viewFull') }}
 						</NuxtLink>
 					</div>
 				</div>
 
 				<div class="leaderboard-loading" v-else>
 					<img src="/images/bonk.png" class="bonk-loading" alt="">
-					<p>Loading...</p>
+					<p>{{ $t('common.loading') }}</p>
 				</div>
 			</div>
 		</transition>
