@@ -47,7 +47,6 @@
   "mint": {
     "title": "Mint your NFT right now!",
     "selectPaymentToken": "Select your payment token",
-    "priceUsd": "(~${usd} USD)",
     "hurry": "Hurry, this element can only be minted once!",
     "elementToMint": "Element to mint:",
     "mintWith": "Mint with {token}",
