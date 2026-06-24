@@ -1,13 +1,13 @@
 <template>
-  <div class="lang-switcher">
-    <button
-      v-for="l in ['en', 'es']"
-      :key="l"
-      class="lang-btn"
-      :class="{ active: locale === l }"
-      @click="setLocale(l)"
-    >{{ l.toUpperCase() }}</button>
-  </div>
+	<div class="lang-switcher">
+		<button
+			v-for="l in ['en', 'es']"
+			:key="l"
+			class="lang-btn"
+			:class="{ active: locale === l }"
+			@click="setLocale(l)"
+		>{{ l.toUpperCase() }}</button>
+	</div>
 </template>
 
 <script setup>
@@ -29,7 +29,6 @@ const { locale, setLocale } = useI18n();
 	cursor: pointer
 	color: black
 	line-height: 1.4
-	image-rendering: pixelated
 
 	&:hover
 		background: #F5F6FA
