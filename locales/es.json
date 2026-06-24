@@ -1,8 +1,8 @@
 {
   "common": { "loading": "Cargando...", "close": "Cerrar", "cancel": "Cancelar", "confirm": "Confirmar" },
   "header": {
-    "playMusic": "Reproducir Música",
-    "pauseMusic": "Pausar Música",
+    "playMusic": "Música",
+    "pauseMusic": "Pausar",
     "challenges": "Retos",
     "clearElements": "Limpiar Elementos",
     "howToPlay": "Cómo Jugar",
