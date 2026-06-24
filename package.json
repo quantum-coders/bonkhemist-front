@@ -24,6 +24,7 @@
 		"sass-loader": "^13.2.2"
 	},
 	"dependencies": {
+		"@nuxtjs/i18n": "^8",
 		"@solana/spl-token": "^0.4.6",
 		"@solana/wallet-adapter-base": "^0.9.23",
 		"@solana/wallet-adapter-vue": "^0.4.5",
@@ -43,5 +44,6 @@
 		"vue-toast-notification": "^3.0",
 		"vue3-google-map": "^0.15.0",
 		"vuedraggable": "^4.1.0"
-	}
+	},
+	"packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

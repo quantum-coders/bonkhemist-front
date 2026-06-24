@@ -9,8 +9,24 @@ export default defineNuxtConfig({
 		'@pinia/nuxt',
 		'nuxt-svgo',
 		'nuxt-icon',
-		'@vueuse/nuxt'
+		'@vueuse/nuxt',
+		'@nuxtjs/i18n',
 	],
+	i18n: {
+		strategy: 'no_prefix',
+		defaultLocale: 'en',
+		locales: [
+			{ code: 'en', name: 'English', file: 'en.json' },
+			{ code: 'es', name: 'Español', file: 'es.json' },
+		],
+		langDir: 'locales',
+		lazy: true,
+		detectBrowserLanguage: {
+			useCookie: true,
+			cookieKey: 'bonkhemist_lang',
+			fallbackLocale: 'en',
+		},
+	},
 	imports: {
 		dirs: [
 			'stores',
