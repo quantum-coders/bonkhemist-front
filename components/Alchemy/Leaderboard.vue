@@ -21,7 +21,7 @@
 						<alchemy-animated-text :text="$t('leaderboard.title')" />
 					</h2>
 					<button class="close-btn" @click="isExpanded = false">
-						<img src="/images/close.png" alt="Close">
+						<img src="/images/close.png" :alt="$t('common.close')">
 					</button>
 				</div>
 

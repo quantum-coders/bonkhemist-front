@@ -42,7 +42,9 @@
     "challengePrefix": "Challenge:&nbsp;{name}",
     "nftReady": "Your NFT is ready in your collection!",
     "challengeCompleted": "Challenge completed!",
-    "combinationFailed": "Combination failed"
+    "combinationFailed": "Combination failed",
+    "mintHere": "Mint Element Here",
+    "deleteElement": "Delete element"
   },
   "mint": {
     "title": "Mint your NFT right now!",

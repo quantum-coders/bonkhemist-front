@@ -42,7 +42,9 @@
     "challengePrefix": "Reto:&nbsp;{name}",
     "nftReady": "¡Tu NFT está listo en tu colección!",
     "challengeCompleted": "¡Reto completado!",
-    "combinationFailed": "Combinación fallida"
+    "combinationFailed": "Combinación fallida",
+    "mintHere": "¡Acuña tu elemento aquí!",
+    "deleteElement": "Eliminar elemento"
   },
   "mint": {
     "title": "¡Mintea tu NFT ahora mismo!",

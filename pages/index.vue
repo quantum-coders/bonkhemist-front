@@ -89,8 +89,8 @@
 								/>
 							</template>
 
-							<div class="mint-drop-zone"></div>
-							<div class="delete-drop-zone" :class="{ 'opened': !!somethingDeleting }"></div>
+							<div class="mint-drop-zone" :style="{ '--zone-label': JSON.stringify($t('index.mintHere')) }"></div>
+							<div class="delete-drop-zone" :class="{ 'opened': !!somethingDeleting }" :style="{ '--zone-label': JSON.stringify($t('index.deleteElement')) }"></div>
 						</template>
 					</div>
 				</div>
@@ -938,7 +938,7 @@
 		image-rendering: pixelated
 
 		&:before
-			content: 'Mint Element Here'
+			content: var(--zone-label)
 			position: absolute
 			width: 56px * 2
 			height: 20px * 2
@@ -974,7 +974,7 @@
 		image-rendering: pixelated
 
 		&:before
-			content: 'Delete element'
+			content: var(--zone-label)
 			position: absolute
 			width: 56px * 2
 			height: 20px * 2
