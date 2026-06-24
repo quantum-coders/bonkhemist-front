@@ -67,7 +67,13 @@
 						<a class="view" href="#">{{ $t('index.viewReason') }}</a>
 
 						<div class="combination-wrapper">
-							<p>{{ $t('index.youCreated', { result: alchemy.lastCombination.result, element1: alchemy.lastCombination.element1, element2: alchemy.lastCombination.element2 }) }}</p>
+							<p>
+								<i18n-t keypath="index.youCreated" tag="span">
+									<template #result><strong>{{ alchemy.lastCombination.result }}</strong></template>
+									<template #element1><strong>{{ alchemy.lastCombination.element1 }}</strong></template>
+									<template #element2><strong>{{ alchemy.lastCombination.element2 }}</strong></template>
+								</i18n-t>
+							</p>
 							<p>{{ $t('index.reason') }} <strong>{{ alchemy.lastCombination.reasoning }}</strong></p>
 						</div>
 					</div>
