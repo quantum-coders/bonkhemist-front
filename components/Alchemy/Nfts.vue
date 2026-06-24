@@ -2,8 +2,8 @@
 	<div class="nft-container">
 		<div v-if="alchemy.nfts.length === 0" class="empty">
 			<img src="/images/doge.png" alt="Empty" class="doge">
-			<p class="wow">Wow, such empty</p>
-			<p>Mint any element to start your collection!</p>
+			<p class="wow">{{ $t('nfts.wowEmpty') }}</p>
+			<p>{{ $t('nfts.mintToStart') }}</p>
 		</div>
 		<div v-else class="nft-grid">
 			<div class="nft-card" v-for="nft in alchemy.nfts" :key="nft.address">
@@ -16,7 +16,7 @@
 					</button>
 				</div>
 				<div class="marketplace-actions">
-					<span class="marketplace-label">Sell on:</span>
+					<span class="marketplace-label">{{ $t('nfts.sellOn') }}</span>
 					<div class="marketplace-buttons">
 						<button class="marketplace-btn magic-eden" @click="goToMagicEden(nft.address)">
 							Magic Eden

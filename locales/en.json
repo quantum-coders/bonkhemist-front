@@ -100,6 +100,18 @@
     "loadMore": "Load More",
     "loadingLeaderboard": "Loading leaderboard..."
   },
+  "challenges": {
+    "loading": "Challenges Loading",
+    "title": "Challenges",
+    "activeChallenge": "You have an active challenge!",
+    "generateToComplete": "Generate {name} to complete it!",
+    "selectPrompt": "Select one of the following rad challenges!"
+  },
+  "nfts": {
+    "wowEmpty": "Wow, such empty",
+    "mintToStart": "Mint any element to start your collection!",
+    "sellOn": "Sell on:"
+  },
   "mintDiscovery": {
     "firstDiscovery": "FIRST DISCOVERY",
     "beTheFirst": "BE THE FIRST TO MINT!",

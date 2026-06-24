@@ -17,20 +17,22 @@
 			<div class="loading" v-if="!!alchemy.challengesLoading && !alchemy.activeChallenge">
 				<img src="/images/bonk.png" class="bonk" alt="">
 				<p>
-					<alchemy-animated-text text="Challenges Loading" />
+					<alchemy-animated-text :text="$t('challenges.loading')" />
 				</p>
 			</div>
 
 			<div v-else class="modal-content text-center">
-				<h4>Challenges</h4>
+				<h4>{{ $t('challenges.title') }}</h4>
 
 				<template v-if="!!alchemy.activeChallenge">
-					<p>You have an active challenge!</p>
-					<p>Generate <strong>{{ alchemy.activeChallenge.name }}</strong> to complete it!</p>
+					<p>{{ $t('challenges.activeChallenge') }}</p>
+					<i18n-t keypath="challenges.generateToComplete" tag="p">
+						<template #name><strong>{{ alchemy.activeChallenge.name }}</strong></template>
+					</i18n-t>
 				</template>
 
 				<template v-else>
-					<p>Select one of the following rad challenges!</p>
+					<p>{{ $t('challenges.selectPrompt') }}</p>
 
 					<div class="challenges">
 						<template v-for="challenge in alchemy.challengesSuggestions">
