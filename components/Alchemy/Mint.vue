@@ -18,9 +18,12 @@
 
 				<template v-if="!alchemy.justMinted">
 
-					<h4>Mint your NFT right now!</h4>
+					<h4>{{ $t('mint.title') }}</h4>
 
-					<p>Select your payment token <strong>(~${{ priceInfo?.usd || 7 }} USD)</strong></p>
+					<p>
+						{{ $t('mint.selectPaymentToken') }}
+						<strong>(~${{ priceInfo?.usd || 7 }} USD)</strong>
+					</p>
 
 					<div class="token-options" v-if="priceInfo">
 						<button
@@ -35,26 +38,29 @@
 						</button>
 					</div>
 
-					<p class="mt-3">Hurry, this element can only be minted once!</p>
-					<p class="mb-4">Element to mint:</p>
+					<p class="mt-3">{{ $t('mint.hurry') }}</p>
+					<p class="mb-4">{{ $t('mint.elementToMint') }}</p>
 					<p class="element-to-mint">
 						<alchemy-element class="d-inline-block" :element="{ name: alchemy.elementToMint.name }"/>
 					</p>
 					<a href="#" @click.prevent="mintElement" :class="{'mint-button': true, 'mint-button disabled-button': loading}" class="mint-button">
-						<span v-if="!loading">Mint with {{ selectedToken }}</span>
+						<span v-if="!loading">{{ $t('mint.mintWith', { token: selectedToken }) }}</span>
 						<div v-if="loading" class="spinner-border text-primary loading-effect" role="status"
 							>
-							<span class="visually-hidden">Loading...</span>
+							<span class="visually-hidden">{{ $t('common.loading') }}</span>
 						</div>
 					</a>
 				</template>
 
 				<template v-else>
-					<h4>Minted!</h4>
-					<p>Your <strong>
-						<alchemy-animated-text text="incredible, alchemical NFT"/>
-					</strong> has been minted!
-					</p>
+					<h4>{{ $t('mint.minted') }}</h4>
+					<i18n-t keypath="mint.nftHasBeenMinted" tag="p">
+						<template #nft>
+							<strong>
+								<alchemy-animated-text :text="$t('mint.incredibleNft')"/>
+							</strong>
+						</template>
+					</i18n-t>
 
 					<!-- NFT Card Display -->
 					<div class="nft-card" v-if="mintedNft">
@@ -64,14 +70,14 @@
 							</div>
 							<div class="nft-info">
 								<h5 class="nft-name">{{ mintedNft.name }}</h5>
-								<span class="nft-badge">First Discovery</span>
+								<span class="nft-badge">{{ $t('mint.firstDiscovery') }}</span>
 							</div>
 						</div>
 					</div>
 
 					<div class="mint-actions">
-						<a v-if="mintedNft?.mintAddress" :href="`https://solscan.io/token/${mintedNft.mintAddress}`" target="_blank" class="mint-button">View NFT</a>
-						<a :href="mintedTransaction" target="_blank" class="mint-button secondary">View TX</a>
+						<a v-if="mintedNft?.mintAddress" :href="`https://solscan.io/token/${mintedNft.mintAddress}`" target="_blank" class="mint-button">{{ $t('mint.viewNft') }}</a>
+						<a :href="mintedTransaction" target="_blank" class="mint-button secondary">{{ $t('mint.viewTx') }}</a>
 					</div>
 				</template>
 			</div>
@@ -86,6 +92,7 @@ import {
 } from '@solana/web3.js';
 import {useWallet} from "solana-wallets-vue";
 
+const { t } = useI18n();
 const emit = defineEmits(['ready']);
 const alchemy = useAlchemyStore();
 const config = useRuntimeConfig();
@@ -138,7 +145,7 @@ const mintElement = async () => {
 	const provider = getWalletProvider();
 
 	if (!provider) {
-		errorToast('Please connect your wallet first');
+		errorToast(t('mint.connectWalletFirst'));
 		return;
 	}
 
@@ -161,7 +168,7 @@ const mintElement = async () => {
 
 		if (!prepareRes.ok) {
 			const errorData = await prepareRes.json();
-			throw new Error(errorData.message || 'Failed to prepare transaction');
+			throw new Error(errorData.message || t('mint.failedToPrepare'));
 		}
 
 		const prepareData = await prepareRes.json();
@@ -193,7 +200,7 @@ const mintElement = async () => {
 
 		if (!completeRes.ok) {
 			const errorData = await completeRes.json();
-			throw new Error(errorData.message || 'Failed to complete mint');
+			throw new Error(errorData.message || t('mint.failedToComplete'));
 		}
 
 		const completeData = await completeRes.json();
@@ -209,14 +216,14 @@ const mintElement = async () => {
 			element: completeData.data?.element,
 			mintAddress: completeData.data?.mintAddress || completeData.data?.nft?.mintAddress
 		};
-		successToast('NFT minted successfully!');
+		successToast(t('mint.mintedSuccessfully'));
 
 		// Refresh NFTs
 		await alchemy.fetchNFTs();
 
 	} catch (error) {
 		console.error('Minting error:', error);
-		errorToast(error.message || 'Minting failed');
+		errorToast(error.message || t('mint.mintingFailed'));
 	} finally {
 		loading.value = false;
 	}

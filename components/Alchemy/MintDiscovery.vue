@@ -20,21 +20,25 @@
 				<template v-if="!isMinting && !mintSuccess && !mintError">
 					<div class="discovery-badge">
 						<span class="badge-glow"></span>
-						<span class="badge-text">FIRST DISCOVERY</span>
+						<span class="badge-text">{{ $t('mintDiscovery.firstDiscovery') }}</span>
 					</div>
 
 					<h4 class="title-animated">
-						<alchemy-animated-text text="BE THE FIRST TO MINT!"/>
+						<alchemy-animated-text :text="$t('mintDiscovery.beTheFirst')"/>
 					</h4>
 
-					<p class="subtitle">You discovered <strong>{{ element?.name }}</strong> before anyone else!</p>
+					<i18n-t keypath="mintDiscovery.youDiscovered" tag="p" class="subtitle">
+						<template #name>
+							<strong>{{ element?.name }}</strong>
+						</template>
+					</i18n-t>
 
 					<p class="element-preview">
 						<alchemy-element class="d-inline-block element-bounce" :element="{ name: element?.name }"/>
 					</p>
 
 					<div class="price-section" v-if="priceInfo">
-						<p class="price-label">Select Payment Token (~${{ priceInfo.usd }} USD):</p>
+						<p class="price-label">{{ $t('mintDiscovery.selectPaymentToken', { usd: priceInfo.usd }) }}</p>
 						<div class="token-options">
 							<button
 								v-for="token in ['SOL', 'BONK', 'WIF']"
@@ -50,12 +54,12 @@
 					</div>
 
 					<div class="info-box">
-						<p>Your NFT will feature:</p>
+						<p>{{ $t('mintDiscovery.nftWillFeature') }}</p>
 						<ul>
-							<li>Unique AI-generated pixel art</li>
-							<li>Bonkhemist watermark</li>
-							<li>First Discoverer badge</li>
-							<li>Permanent blockchain registration</li>
+							<li>{{ $t('mintDiscovery.featurePixelArt') }}</li>
+							<li>{{ $t('mintDiscovery.featureWatermark') }}</li>
+							<li>{{ $t('mintDiscovery.featureDiscovererBadge') }}</li>
+							<li>{{ $t('mintDiscovery.featureBlockchain') }}</li>
 						</ul>
 					</div>
 
@@ -64,9 +68,9 @@
 						class="mint-button pulse-animation"
 						:disabled="loading"
 					>
-						<span v-if="!loading">MINT NOW</span>
+						<span v-if="!loading">{{ $t('mintDiscovery.mintNow') }}</span>
 						<div v-else class="spinner-border text-primary" role="status">
-							<span class="visually-hidden">Loading...</span>
+							<span class="visually-hidden">{{ $t('common.loading') }}</span>
 						</div>
 					</button>
 				</template>
@@ -83,19 +87,19 @@
 						<div class="progress-steps">
 							<div class="step" :class="{ active: stepIndex >= 1, done: stepIndex > 1 }">
 								<span class="step-dot"></span>
-								<span class="step-label">Preparing Transaction</span>
+								<span class="step-label">{{ $t('mintDiscovery.stepPreparing') }}</span>
 							</div>
 							<div class="step" :class="{ active: stepIndex >= 2, done: stepIndex > 2 }">
 								<span class="step-dot"></span>
-								<span class="step-label">Signing with Wallet</span>
+								<span class="step-label">{{ $t('mintDiscovery.stepSigning', { token: selectedToken }) }}</span>
 							</div>
 							<div class="step" :class="{ active: stepIndex >= 3, done: stepIndex > 3 }">
 								<span class="step-dot"></span>
-								<span class="step-label">Generating Pixel Art</span>
+								<span class="step-label">{{ $t('mintDiscovery.stepGenerating') }}</span>
 							</div>
 							<div class="step" :class="{ active: stepIndex >= 4, done: stepIndex > 4 }">
 								<span class="step-dot"></span>
-								<span class="step-label">Creating NFT</span>
+								<span class="step-label">{{ $t('mintDiscovery.stepCreating') }}</span>
 							</div>
 						</div>
 					</div>
@@ -108,33 +112,33 @@
 							<span class="checkmark">&#10003;</span>
 						</div>
 						<h4 class="success-title">
-							<alchemy-animated-text text="NFT MINTED!"/>
+							<alchemy-animated-text :text="$t('mintDiscovery.nftMinted')"/>
 						</h4>
-						<p class="success-subtitle">You are now the first owner of:</p>
+						<p class="success-subtitle">{{ $t('mintDiscovery.firstOwner') }}</p>
 
 						<div class="nft-preview" v-if="mintResult?.image">
-							<img :src="mintResult.image" alt="Your NFT" class="nft-image">
+							<img :src="mintResult.image" :alt="mintResult?.element?.name" class="nft-image">
 						</div>
 
 						<p class="nft-name">{{ mintResult?.element?.name }}</p>
 
 						<!-- Marketplace Links -->
 						<div class="marketplace-section" v-if="mintResult?.mintAddress">
-							<p class="marketplace-label">Trade your NFT on:</p>
+							<p class="marketplace-label">{{ $t('mintDiscovery.tradeOn') }}</p>
 							<div class="marketplace-links">
 								<a
 									:href="`https://magiceden.io/item-details/${mintResult.mintAddress}`"
 									target="_blank"
 									class="marketplace-link magic-eden"
 								>
-									Magic Eden
+									{{ $t('mintDiscovery.magicEden') }}
 								</a>
 								<a
 									:href="`https://www.tensor.trade/item/${mintResult.mintAddress}`"
 									target="_blank"
 									class="marketplace-link tensor"
 								>
-									Tensor
+									{{ $t('mintDiscovery.tensor') }}
 								</a>
 							</div>
 						</div>
@@ -146,10 +150,10 @@
 								target="_blank"
 								class="action-button secondary"
 							>
-								View Transaction
+								{{ $t('mintDiscovery.viewTransaction') }}
 							</a>
 							<button @click="closeModal" class="action-button primary">
-								Continue Playing
+								{{ $t('mintDiscovery.continuePlaying') }}
 							</button>
 						</div>
 					</div>
@@ -159,10 +163,10 @@
 				<template v-if="mintError">
 					<div class="error-content">
 						<div class="error-icon">!</div>
-						<h4>Minting Failed</h4>
+						<h4>{{ $t('mintDiscovery.mintingFailed') }}</h4>
 						<p class="error-message">{{ mintError }}</p>
 						<button @click="resetState" class="mint-button">
-							Try Again
+							{{ $t('mintDiscovery.tryAgain') }}
 						</button>
 					</div>
 				</template>
@@ -189,6 +193,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'minted']);
 
+const { t } = useI18n();
 const config = useRuntimeConfig();
 const alchemy = useAlchemyStore();
 const { errorToast, successToast } = usePrettyToast();
@@ -246,7 +251,7 @@ const startMinting = async () => {
 	const provider = getWalletProvider();
 
 	if (!provider) {
-		errorToast('Please connect your wallet first');
+		errorToast(t('mint.connectWalletFirst'));
 		return;
 	}
 
@@ -254,7 +259,7 @@ const startMinting = async () => {
 	isMinting.value = true;
 	mintError.value = null;
 	stepIndex.value = 1;
-	currentStep.value = 'Preparing transaction...';
+	currentStep.value = t('mintDiscovery.stepPreparing');
 
 	try {
 		// Step 1: Prepare the token transfer transaction
@@ -272,14 +277,14 @@ const startMinting = async () => {
 
 		if (!prepareRes.ok) {
 			const errorData = await prepareRes.json();
-			throw new Error(errorData.message || 'Failed to prepare transaction');
+			throw new Error(errorData.message || t('mint.failedToPrepare'));
 		}
 
 		const prepareData = await prepareRes.json();
 
 		// Step 2: Sign transaction with wallet
 		stepIndex.value = 2;
-		currentStep.value = `Please sign the ${selectedToken.value} transfer...`;
+		currentStep.value = t('mintDiscovery.stepSigning', { token: selectedToken.value });
 
 		const { Buffer } = await import('buffer');
 		window.Buffer = Buffer;
@@ -294,13 +299,13 @@ const startMinting = async () => {
 
 		// Step 3: Complete the mint (image generation happens here)
 		stepIndex.value = 3;
-		currentStep.value = 'Generating your pixel art...';
+		currentStep.value = t('mintDiscovery.stepGenerating');
 
 		// Give it a moment for visual feedback
 		await new Promise(resolve => setTimeout(resolve, 1000));
 
 		stepIndex.value = 4;
-		currentStep.value = 'Creating your NFT...';
+		currentStep.value = t('mintDiscovery.stepCreating');
 
 		const completeRes = await fetch(`${config.public.apiUrl}/nfts/mint-discovery/complete`, {
 			method: 'POST',
@@ -316,7 +321,7 @@ const startMinting = async () => {
 
 		if (!completeRes.ok) {
 			const errorData = await completeRes.json();
-			throw new Error(errorData.message || 'Failed to complete mint');
+			throw new Error(errorData.message || t('mint.failedToComplete'));
 		}
 
 		const completeData = await completeRes.json();
@@ -325,7 +330,7 @@ const startMinting = async () => {
 		// Success!
 		isMinting.value = false;
 		mintSuccess.value = true;
-		successToast('NFT minted successfully!');
+		successToast(t('mint.mintedSuccessfully'));
 
 		// Refresh NFTs and leaderboard
 		await alchemy.fetchNFTs();
@@ -335,8 +340,8 @@ const startMinting = async () => {
 	} catch (error) {
 		console.error('Minting error:', error);
 		isMinting.value = false;
-		mintError.value = error.message || 'An unexpected error occurred';
-		errorToast(error.message || 'Minting failed');
+		mintError.value = error.message || t('mintDiscovery.unexpectedError');
+		errorToast(error.message || t('mint.mintingFailed'));
 	} finally {
 		loading.value = false;
 	}
