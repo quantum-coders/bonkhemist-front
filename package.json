@@ -6,7 +6,8 @@
 		"dev": "nuxt dev",
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",
-		"postinstall": "nuxt prepare"
+		"postinstall": "nuxt prepare",
+		"i18n:check": "node scripts/i18n-check.mjs"
 	},
 	"devDependencies": {
 		"@pinia/nuxt": "^0.4.11",
