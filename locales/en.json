@@ -139,5 +139,68 @@
     "mintingFailed": "Minting Failed",
     "tryAgain": "Try Again",
     "unexpectedError": "An unexpected error occurred"
+  },
+  "landing": {
+    "nav": { "play": "Play", "leaderboard": "Leaderboard" },
+    "hero": {
+      "eyebrow": "Pixel alchemy on Solana",
+      "title1": "Mix.",
+      "title2": "Discover.",
+      "title3": "Mint.",
+      "subhead": "Start with four elements. Combine them, let the AI conjure something new, and mint your discoveries as NFTs on Solana.",
+      "cta": "Play now",
+      "scrollHint": "How it works"
+    },
+    "equation": { "plus": "+", "equals": "=" },
+    "whatIs": {
+      "eyebrow": "What is Bonkhemist",
+      "heading": "An alchemy game where the recipes don't exist yet.",
+      "body": "Little Alchemy meets Solana. Drag two elements together and an AI invents the result on the spot — a creature, a place, a meme, a god. Any combination nobody has made before is a first discovery, and it's yours to mint forever.",
+      "chip1": "AI-generated results",
+      "chip2": "First-discovery NFTs",
+      "chip3": "Built on Solana"
+    },
+    "how": {
+      "eyebrow": "How to play",
+      "heading": "Four steps to your first discovery.",
+      "step1Title": "Connect your wallet",
+      "step1Body": "Plug in your Solana wallet — it's your pouch of BONK and the home for everything you mint.",
+      "step2Title": "Mix elements",
+      "step2Body": "Start with earth, water, fire and air. Drag two together and watch them bonk into something new.",
+      "step3Title": "Discover",
+      "step3Body": "The AI dreams up the result. Keep combining to unlock creatures, legends and chaos — the tree never ends.",
+      "step4Title": "Mint it",
+      "step4Body": "Found something nobody else has? Mint it as an NFT on Solana and own that discovery forever."
+    },
+    "combos": {
+      "eyebrow": "The core loop",
+      "heading": "Two things in. One surprise out.",
+      "sub": "A few of the thousands of combinations waiting in the tree.",
+      "water": "Water", "fire": "Fire", "steam": "Steam",
+      "air": "Air", "cloud": "Cloud",
+      "earth": "Earth", "volcano": "Volcano",
+      "dragon": "Dragon", "zeus": "Zeus", "mystery": "???",
+      "mysteryLabel": "yours to discover"
+    },
+    "mint": {
+      "eyebrow": "Mint & own",
+      "heading": "Your discoveries, on-chain forever.",
+      "body": "Be the first to create something and you're its first discoverer. Mint it and the element becomes a one-of-a-kind NFT — unique AI pixel art, a discoverer badge, registered permanently on Solana.",
+      "point1": "Unique AI-generated pixel art",
+      "point2": "First-Discoverer badge",
+      "point3": "Permanent on Solana",
+      "point4": "Trade on Magic Eden & Tensor"
+    },
+    "finalCta": {
+      "heading": "Ready to brew some chaos?",
+      "body": "Four elements. Infinite combinations. One you might be the first to find.",
+      "cta": "Start your first experiment"
+    },
+    "footer": {
+      "tagline": "Pixel alchemy on Solana.",
+      "play": "Play the game",
+      "leaderboard": "Leaderboard",
+      "rights": "Bonkhemist"
+    }
   }
 }

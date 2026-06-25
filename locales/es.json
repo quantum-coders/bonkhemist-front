@@ -139,5 +139,68 @@
     "mintingFailed": "Error al Mintear",
     "tryAgain": "Intentar de Nuevo",
     "unexpectedError": "Ocurrió un error inesperado"
+  },
+  "landing": {
+    "nav": { "play": "Jugar", "leaderboard": "Clasificación" },
+    "hero": {
+      "eyebrow": "Alquimia pixel en Solana",
+      "title1": "Mezcla.",
+      "title2": "Descubre.",
+      "title3": "Mintea.",
+      "subhead": "Empieza con cuatro elementos. Combínalos, deja que la IA conjure algo nuevo, y mintea tus descubrimientos como NFTs en Solana.",
+      "cta": "Jugar ahora",
+      "scrollHint": "Cómo funciona"
+    },
+    "equation": { "plus": "+", "equals": "=" },
+    "whatIs": {
+      "eyebrow": "Qué es Bonkhemist",
+      "heading": "Un juego de alquimia donde las recetas aún no existen.",
+      "body": "Little Alchemy se encuentra con Solana. Arrastra dos elementos y una IA inventa el resultado al instante — una criatura, un lugar, un meme, un dios. Cualquier combinación que nadie haya hecho antes es un primer descubrimiento, y es tuyo para mintear para siempre.",
+      "chip1": "Resultados generados por IA",
+      "chip2": "NFTs de primer descubrimiento",
+      "chip3": "Construido en Solana"
+    },
+    "how": {
+      "eyebrow": "Cómo jugar",
+      "heading": "Cuatro pasos hasta tu primer descubrimiento.",
+      "step1Title": "Conecta tu billetera",
+      "step1Body": "Conecta tu billetera de Solana — es tu bolsa de BONK y el hogar de todo lo que minteas.",
+      "step2Title": "Mezcla elementos",
+      "step2Body": "Empieza con tierra, agua, fuego y aire. Arrastra dos y míralos hacer ¡bonk! en algo nuevo.",
+      "step3Title": "Descubre",
+      "step3Body": "La IA imagina el resultado. Sigue combinando para desbloquear criaturas, leyendas y caos — el árbol no termina.",
+      "step4Title": "Mintéalo",
+      "step4Body": "¿Encontraste algo que nadie más tiene? Mintéalo como NFT en Solana y posee ese descubrimiento para siempre."
+    },
+    "combos": {
+      "eyebrow": "El loop central",
+      "heading": "Dos cosas entran. Una sorpresa sale.",
+      "sub": "Algunas de las miles de combinaciones que esperan en el árbol.",
+      "water": "Agua", "fire": "Fuego", "steam": "Vapor",
+      "air": "Aire", "cloud": "Nube",
+      "earth": "Tierra", "volcano": "Volcán",
+      "dragon": "Dragón", "zeus": "Zeus", "mystery": "???",
+      "mysteryLabel": "por descubrir"
+    },
+    "mint": {
+      "eyebrow": "Mintea y posee",
+      "heading": "Tus descubrimientos, on-chain para siempre.",
+      "body": "Sé el primero en crear algo y serás su primer descubridor. Mintéalo y el elemento se vuelve un NFT único — pixel art generado por IA, una insignia de descubridor, registrado permanentemente en Solana.",
+      "point1": "Pixel art único generado por IA",
+      "point2": "Insignia de Primer Descubridor",
+      "point3": "Permanente en Solana",
+      "point4": "Intercambia en Magic Eden y Tensor"
+    },
+    "finalCta": {
+      "heading": "¿Listo para preparar algo de caos?",
+      "body": "Cuatro elementos. Infinitas combinaciones. Una que quizá seas el primero en encontrar.",
+      "cta": "Empieza tu primer experimento"
+    },
+    "footer": {
+      "tagline": "Alquimia pixel en Solana.",
+      "play": "Jugar",
+      "leaderboard": "Clasificación",
+      "rights": "Bonkhemist"
+    }
   }
 }
