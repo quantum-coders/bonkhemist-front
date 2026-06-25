@@ -26,7 +26,13 @@
 				<NuxtLink to="/">{{ $t('landing.footer.play') }}</NuxtLink>
 				<NuxtLink to="/leaderboard">{{ $t('landing.footer.leaderboard') }}</NuxtLink>
 			</nav>
-			<p class="lfoot__rights">© {{ $t('landing.footer.rights') }}</p>
+
+			<a class="lfoot__by" href="https://qcdr.io" target="_blank" rel="noopener noreferrer">
+				<span class="lfoot__by-label">{{ $t('landing.footer.madeBy') }}</span>
+				<img class="lfoot__by-logo" src="/images/qcdr-logo.svg" alt="Quantum Coders" />
+			</a>
+
+			<p class="lfoot__rights">© {{ $t('landing.footer.rights') }} · Quantum Coders</p>
 		</footer>
 	</div>
 </template>
@@ -139,9 +145,46 @@ useHead({
 				outline: 2px solid var(--ll-green)
 				outline-offset: 3px
 
+	&__by
+		display: inline-flex
+		align-items: center
+		gap: 0.55rem
+		margin: 1.7rem 0 0
+		padding: 0.45rem 0.8rem
+		background: var(--ll-paper)
+		border: 2px solid var(--ll-ink)
+		box-shadow: var(--ll-shadow-sm)
+		border-radius: 4px
+		text-decoration: none
+		transition: transform 0.08s ease, box-shadow 0.08s ease
+		&:hover
+			transform: translate(-2px, -2px)
+			box-shadow: 6px 6px 0 var(--ll-ink)
+		&:focus-visible
+			outline: 3px solid var(--ll-green)
+			outline-offset: 3px
+
+	&__by-label
+		font-family: var(--ll-font-pixel)
+		font-size: 0.6rem
+		text-transform: uppercase
+		letter-spacing: 0.06em
+		color: var(--ll-ink)
+
+	&__by-logo
+		height: 18px
+		width: auto
+		display: block
+
 	&__rights
 		font-family: var(--ll-font-body)
 		font-size: 0.8rem
 		color: #9b988f
-		margin: 1.6rem 0 0
+		margin: 1.4rem 0 0
+
+@media (prefers-reduced-motion: reduce)
+	.lfoot__by
+		transition: none
+		&:hover
+			transform: none
 </style>
